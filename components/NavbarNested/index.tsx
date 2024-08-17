@@ -1,19 +1,11 @@
-import { Group, ScrollArea, rem, Text } from '@mantine/core';
-import {
-  IconNotes,
-  IconCalendarStats,
-  IconGauge,
-  IconPresentationAnalytics,
-  // IconFileAnalytics,
-  IconAdjustments,
-  IconLock,
-} from '@tabler/icons-react';
-import { UserButton } from '../UserButton/UserButton';
+'use client';
 
-import classes from './NavbarNested.module.css';
-
-import { LinksGroup } from '../NavbarLinksGroup/NavbarLinksGroup';
+import { Group, ScrollArea, Text } from '@mantine/core';
+import { IconCalendarStats, IconNotes, IconPresentationAnalytics } from '@tabler/icons-react';
 import { useState } from 'react';
+import { LinksGroup } from '../NavbarLinksGroup/NavbarLinksGroup';
+import { UserButton } from '../UserButton/UserButton';
+import classes from './styles.module.css';
 
 // import temp from '../../public/phalanx.svg';
 // import Image from 'next/image';
@@ -66,14 +58,6 @@ export function NavbarNested() {
 
       <div className={classes.footer}>
         <UserButton />
-      </div>
-
-      <div className={classes.pageInfo}>
-        {selectedPage && (
-          <Text size="lg" fw={700}>
-            {selectedPage}
-          </Text>
-        )}
       </div>
     </nav>
   );
