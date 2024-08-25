@@ -1,6 +1,6 @@
 'use client';
 
-import { Group, ScrollArea } from '@mantine/core';
+import { Group } from '@mantine/core';
 import {
   IconBug,
   IconLayoutDashboard,
@@ -19,13 +19,23 @@ const mockdata = [
   {
     label: 'Dashboard',
     icon: IconLayoutDashboard,
+    link: '/',
   },
   {
     label: 'API Inventory',
     icon: IconWorldUpload,
+    link: '/apiInventory',
   },
-  { label: 'Issues', icon: IconBug },
-  { label: 'Apps', icon: IconServer },
+  {
+    label: 'Issues',
+    icon: IconBug,
+    link: '/issues',
+  },
+  {
+    label: 'Apps',
+    icon: IconServer,
+    link: '/apps',
+  },
 ];
 export function NavbarNested() {
   const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
@@ -35,27 +45,12 @@ export function NavbarNested() {
       <div className={classes.header}>
         <Group justify="space-between">
           <Image src={logo} width={86} height={30} alt="Picture of the author" />
-          {/* <Text
-            className={classes.headerText}
-            inherit
-            // variant="gradient"
-            component="span"
-            // gradient={{ from: 'pink', to: 'yellow' }}
-          >
-            PHALANX
-          </Text> */}
 
           <IconLayoutSidebar size={24} color="#888888" />
         </Group>
       </div>
 
-      <ScrollArea className={classes.links}>
-        <div className={classes.linksInner}>{links}</div>
-      </ScrollArea>
-
-      {/* <div className={classes.footer}>
-        <UserButton />
-      </div> */}
+      <div className={classes.linksInner}>{links}</div>
     </nav>
   );
 }

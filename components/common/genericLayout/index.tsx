@@ -4,13 +4,13 @@ import Image from 'next/image';
 import classes from './styles.module.css';
 import image from '../../../public/image.svg';
 
-export function PageLayout({ children }: { children: any }) {
+export function PageLayout({ children, pageTitle }: { children: any; pageTitle: string }) {
   return (
     <>
       <div className={classes.maincont}>
         <div className={classes.container}>
           <div className={classes.textcont}>
-            <Text className={classes.gridtext}>Dashboard</Text>
+            <Text className={classes.gridtext}>{pageTitle}</Text>
           </div>
           <div className={classes.rightcont}>
             <div className={classes.iconcont}>

@@ -1,14 +1,14 @@
 'use client';
 
+import { APIInventoryDataTable } from '@/components/apiInventory/dataTable';
 import { PageLayout } from '@/components/common/genericLayout/index';
 import { GenericSelector } from '@/components/common/genericSelector';
 
 export default function Page() {
   return (
-    <PageLayout pageTitle="Dashboard">
+    <PageLayout pageTitle="API Inventory">
       <GenericSelector />
-      {/* <GenericDataTable /> */}
-      <p>Hello this is dashboards</p>
+      <APIInventoryDataTable />
     </PageLayout>
   );
 }

@@ -5,10 +5,9 @@
   line-height: 35.7px;
 }
 .maincont {
-  padding-left: 44px;
+  padding-left: 36px;
   /* padding-right: 40px; */
   padding-top: 36px;
-  position: relative;
 }
 .container {
   display: flex;
@@ -19,7 +18,6 @@
 }
 .textcont {
   height: 36px;
-  width: 147px;
 }
 .rightcont {
   display: flex;

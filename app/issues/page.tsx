@@ -5,10 +5,9 @@ import { GenericSelector } from '@/components/common/genericSelector';
 
 export default function Page() {
   return (
-    <PageLayout pageTitle="Dashboard">
+    <PageLayout pageTitle="Issue Tickets">
       <GenericSelector />
-      {/* <GenericDataTable /> */}
-      <p>Hello this is dashboards</p>
+      <p>Hello this issue page</p>
     </PageLayout>
   );
 }
