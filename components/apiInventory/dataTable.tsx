@@ -3,6 +3,11 @@ import { Checkbox, Table, Pagination, Badge } from '@mantine/core';
 import { monoFont } from '@/app/fonts';
 
 export function APIInventoryDataTable() {
+  const handleRowClick = (endpoint: string) => {
+    // eslint-disable-next-line no-console
+    console.log(`Row clicked for endpoint: ${endpoint}`);
+  };
+
   const elements = [
     {
       type: 'GET',
@@ -107,7 +112,12 @@ export function APIInventoryDataTable() {
     }
 
     return (
-      <Table.Tr key={index} c="dimmed">
+      <Table.Tr
+        key={index}
+        c="dimmed"
+        onClick={() => handleRowClick(element.endpoint)}
+        style={{ cursor: 'pointer' }}
+      >
         <Table.Td className={monoFont.className} fw={700}>
           <Badge color={bgColor}> {element.type}</Badge>
         </Table.Td>
