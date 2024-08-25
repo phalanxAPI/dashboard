@@ -1,0 +1,50 @@
+.gridtext {
+  color: #3c3c3c;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 35.7px;
+}
+.maincont {
+  padding-left: 44px;
+  /* padding-right: 40px; */
+  padding-top: 36px;
+  position: relative;
+}
+.container {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.textcont {
+  height: 36px;
+  width: 147px;
+}
+.rightcont {
+  display: flex;
+  align-items: center;
+
+  flex-direction: row;
+
+  width: 100;
+}
+.iconcont {
+  height: 24px;
+  width: 24px;
+  color: #646464;
+}
+.colorTogglecont {
+  width: 40px;
+  height: 40px;
+  padding-left: 17;
+}
+
+.childrencomp {
+  margin-top: 29px;
+}
+.selectcomp {
+  width: 209;
+  height: 42;
+  padding-top: 29px;
+}

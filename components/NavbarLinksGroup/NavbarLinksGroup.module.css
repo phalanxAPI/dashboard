@@ -1,14 +1,16 @@
 .control {
-  font-weight: 500;
+  font-weight: 600;
   display: block;
   width: 100%;
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-  color: var(--mantine-color-text);
-  font-size: var(--mantine-font-size-sm);
+  /* color: var(--mantine-color-text); */
+  font-size: 16px;
+
+  color: #646464;
 
   @mixin hover {
     background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
+    /* color: #246eff; */
   }
 }
 

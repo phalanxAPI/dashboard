@@ -1,8 +1,14 @@
 'use client';
 
-// import { Welcome } from '../components/Welcome/Welcome';
-// import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
+import { GenericDataTable } from '@/components/common/genericDatatable';
+import { PageLayout } from '@/components/common/genericLayout/index';
+import { GenericSelector } from '@/components/common/genericSelector';
 
 export default function Page() {
-  return <p>Hiii</p>;
+  return (
+    <PageLayout>
+      <GenericSelector />
+      <GenericDataTable />
+    </PageLayout>
+  );
 }

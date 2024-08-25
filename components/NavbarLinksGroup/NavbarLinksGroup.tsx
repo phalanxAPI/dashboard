@@ -31,7 +31,7 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
         <Group justify="space-between" gap={0}>
           <Box style={{ display: 'flex', alignItems: 'center' }}>
             <ThemeIcon variant="light" size={30}>
-              <Icon style={{ width: rem(18), height: rem(18) }} />
+              <Icon className={classes.icon} style={{ width: rem(18), height: rem(18) }} />
             </ThemeIcon>
             <Box ml="md">{label}</Box>
           </Box>

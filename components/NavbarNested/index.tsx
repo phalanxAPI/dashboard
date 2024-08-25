@@ -1,54 +1,51 @@
 'use client';
 
-import { Group, ScrollArea, Text } from '@mantine/core';
-import { IconCalendarStats, IconNotes, IconPresentationAnalytics } from '@tabler/icons-react';
-import { useState } from 'react';
+import { Group, ScrollArea } from '@mantine/core';
+import {
+  IconBug,
+  IconLayoutDashboard,
+  IconLayoutSidebar,
+  IconServer,
+  IconWorldUpload,
+} from '@tabler/icons-react';
+import Image from 'next/image';
 import { LinksGroup } from '../NavbarLinksGroup/NavbarLinksGroup';
-import { UserButton } from '../UserButton/UserButton';
+// import { UserButton } from '../UserButton/UserButton';
 import classes from './styles.module.css';
 
-// import temp from '../../public/phalanx.svg';
-// import Image from 'next/image';
+import logo from '../../public/phalanx.svg';
 
 const mockdata = [
   {
-    label: 'Charts',
-    icon: IconNotes,
+    label: 'Dashboard',
+    icon: IconLayoutDashboard,
   },
   {
-    label: 'API Lists',
-    icon: IconCalendarStats,
+    label: 'API Inventory',
+    icon: IconWorldUpload,
   },
-  { label: 'Tickets', icon: IconPresentationAnalytics },
+  { label: 'Issues', icon: IconBug },
+  { label: 'Apps', icon: IconServer },
 ];
 export function NavbarNested() {
-  const [selectedPage, setSelectedPage] = useState<string | null>(null);
-
-  const handleLinkClick = (label: string) => {
-    setSelectedPage(label);
-  };
-
-  const links = mockdata.map((item) => (
-    <LinksGroup {...item} key={item.label} onClick={() => handleLinkClick(item.label)} />
-  ));
+  const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
 
   return (
     <nav className={classes.navbar}>
       <div className={classes.header}>
         <Group justify="space-between">
-          {/* <Image src={temp} alt="hello" style={{ height: 30, width: 30 }} /> */}
-          <Text
-            size="xl"
-            fw={700}
+          <Image src={logo} width={86} height={30} alt="Picture of the author" />
+          {/* <Text
+            className={classes.headerText}
             inherit
-            variant="gradient"
+            // variant="gradient"
             component="span"
-            gradient={{ from: 'pink', to: 'yellow' }}
+            // gradient={{ from: 'pink', to: 'yellow' }}
           >
-            Phalanx
-          </Text>
+            PHALANX
+          </Text> */}
 
-          {/* <Code fw={700}>v3.1.2</Code> */}
+          <IconLayoutSidebar size={24} color="#888888" />
         </Group>
       </div>
 
@@ -56,9 +53,9 @@ export function NavbarNested() {
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      <div className={classes.footer}>
+      {/* <div className={classes.footer}>
         <UserButton />
-      </div>
+      </div> */}
     </nav>
   );
 }
