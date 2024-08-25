@@ -119,6 +119,7 @@ export function APIInventoryDataTable() {
         </Table.Td>
         <Table.Td>
           <Checkbox
+            checked
             styles={() => ({
               input: {
                 borderRadius: '100%',
@@ -130,6 +131,7 @@ export function APIInventoryDataTable() {
         </Table.Td>
         <Table.Td>
           <Checkbox
+            checked={false}
             styles={() => ({
               input: {
                 borderRadius: '100%',

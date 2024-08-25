@@ -1,13 +1,13 @@
 'use client';
 
+import { AppsDataTable } from '@/components/apps/dataTable';
 import { PageLayout } from '@/components/common/genericLayout/index';
-import { GenericSelector } from '@/components/common/genericSelector';
 
 export default function Page() {
   return (
     <PageLayout pageTitle="Apps">
-      <GenericSelector />
-      <p>Hello this apps page</p>
+      {/* <GenericSelector /> */}
+      <AppsDataTable />
     </PageLayout>
   );
 }
