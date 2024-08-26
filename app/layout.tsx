@@ -2,6 +2,7 @@ import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
 import { theme } from '../theme';
 import ClientProvider from './client-provider';
+import '@mantine/charts/styles.css';
 
 export const metadata = {
   title: 'Mantine Next.js template',
