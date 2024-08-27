@@ -1,11 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { SegmentedControl, Text } from '@mantine/core';
+import { SegmentedControl } from '@mantine/core';
 import APIInfo from '@/components/apiInventory/apiDetsils/apiInfo';
 import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
 import AnalyticsChart from '@/components/apiInventory/apiDetsils/analyticsChart';
 import { TciketsDataTable } from '@/components/apiInventory/apiDetsils/ticketsDatatable';
+import SuccessFlow from '@/components/apiInventory/apiDetsils/rulesConfigs/successFlow';
+import BrokenObjectLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectLevelAuthorization';
+import BrokenAuthentication from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenAuthentication';
+import BrokenObjectPropertyLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectPropertyLevelAuthorization';
+import BrokenFunctionLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenFunctionLevelAuthorization';
 
 export default function DetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
@@ -27,7 +32,13 @@ export default function DetailsPage() {
       ) : selectedValue === 'Tickets' ? (
         <TciketsDataTable />
       ) : (
-        <Text>Hello</Text>
+        <>
+          <SuccessFlow />
+          <BrokenObjectLevelAuthorization />
+          <BrokenAuthentication />
+          <BrokenObjectPropertyLevelAuthorization />
+          <BrokenFunctionLevelAuthorization />
+        </>
       )}
     </DetailsPageLayout>
   );
