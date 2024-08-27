@@ -7,6 +7,7 @@ import {
   IconLayoutSidebar,
   IconServer,
   IconWorldUpload,
+  IconZoomScan,
 } from '@tabler/icons-react';
 import Image from 'next/image';
 import { LinksGroup } from '../NavbarLinksGroup/NavbarLinksGroup';
@@ -25,6 +26,11 @@ const mockdata = [
     label: 'API Inventory',
     icon: IconWorldUpload,
     link: '/apiInventory',
+  },
+  {
+    label: 'Scans',
+    icon: IconZoomScan,
+    link: '/scans',
   },
   {
     label: 'Issues',

@@ -1,4 +1,4 @@
-import { Box, Grid, RingProgress, Text } from '@mantine/core';
+import { Box, Flex, Grid, RingProgress, Text } from '@mantine/core';
 
 export default function ServerStates() {
   return (
@@ -6,22 +6,23 @@ export default function ServerStates() {
       pt="xl"
       pr="lg"
       pl="lg"
+      mih="350px"
       style={{
-        height: '350px',
+        height: 'auto',
         backgroundColor: 'white',
         borderRadius: '40px',
         display: 'flex',
         flexDirection: 'column',
-
+        overflow: 'hidden',
         alignItems: 'center',
       }}
     >
       <Text fw="600" style={{ fontSize: '22px' }} c="#0D1427">
         Server Stats
       </Text>
-      <Grid mt="xl" gutter={{ base: 50 }}>
+      <Grid mt="xl" gutter={{ base: 'lg', md: 'xl', lg: 50 }}>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <div style={{ textAlign: 'center' }}>
+          <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
               sections={[{ value: 46, color: '#0066FF' }]}
@@ -37,10 +38,10 @@ export default function ServerStates() {
             <Text fw="400" c="#151522" mt="sm" size="sm">
               Description
             </Text>
-          </div>
+          </Flex>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <div style={{ textAlign: 'center' }}>
+          <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
               sections={[{ value: 74, color: '#0066FF' }]}
@@ -56,10 +57,10 @@ export default function ServerStates() {
             <Text fw="400" c="#151522" mt="sm" size="sm">
               Description
             </Text>
-          </div>
+          </Flex>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <div style={{ textAlign: 'center' }}>
+          <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
               sections={[{ value: 60, color: '#0066FF' }]}
@@ -76,10 +77,10 @@ export default function ServerStates() {
             <Text fw="400" c="#151522" mt="sm" size="sm">
               Description
             </Text>
-          </div>
+          </Flex>
         </Grid.Col>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
-          <div style={{ textAlign: 'center' }}>
+          <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
               sections={[{ value: 98, color: '#0066FF' }]}
@@ -95,7 +96,7 @@ export default function ServerStates() {
             <Text fw="400" c="#151522" mt="sm" size="sm">
               Description
             </Text>
-          </div>
+          </Flex>
         </Grid.Col>
       </Grid>
     </Box>

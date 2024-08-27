@@ -1,4 +1,4 @@
-import { Table, Pagination, Badge } from '@mantine/core';
+import { Table, Pagination, Text } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { monoFont } from '@/app/fonts';
 
@@ -35,7 +35,7 @@ export function AppsDataTable() {
     return (
       <Table.Tr key={index} className={monoFont.className} c="dimmed">
         <Table.Td fw={700}>
-          <Badge color={bgColor}> {element.name}</Badge>
+          <Text color={bgColor}> {element.name}</Text>
         </Table.Td>
         <Table.Td fw={400}>{element.active_servers}</Table.Td>
         <Table.Td fw={500}>{element.hits}</Table.Td>
