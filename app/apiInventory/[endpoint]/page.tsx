@@ -11,6 +11,11 @@ import BrokenObjectLevelAuthorization from '@/components/apiInventory/apiDetsils
 import BrokenAuthentication from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenAuthentication';
 import BrokenObjectPropertyLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectPropertyLevelAuthorization';
 import BrokenFunctionLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenFunctionLevelAuthorization';
+import ServerSideRequestForgery from '@/components/apiInventory/apiDetsils/rulesConfigs/ServerSideRequestForgery';
+import SecurityMisconfiguration from '@/components/apiInventory/apiDetsils/rulesConfigs/SecurityMisconfiguration';
+import UnsafeConsumptionAPIs from '@/components/apiInventory/apiDetsils/rulesConfigs/UnsafeConsumptionAPIs';
+import UnrestrictedResourceConsumption from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedResourceConsumption';
+import UnrestrictedAccessSensitiveBusinessFlows from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedAccessSensitiveBusinessFlows';
 
 export default function DetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
@@ -38,6 +43,11 @@ export default function DetailsPage() {
           <BrokenAuthentication />
           <BrokenObjectPropertyLevelAuthorization />
           <BrokenFunctionLevelAuthorization />
+          <UnrestrictedResourceConsumption />
+          <UnrestrictedAccessSensitiveBusinessFlows />
+          <ServerSideRequestForgery />
+          <SecurityMisconfiguration />
+          <UnsafeConsumptionAPIs />
         </>
       )}
     </DetailsPageLayout>

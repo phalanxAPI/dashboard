@@ -16,6 +16,7 @@ interface LinksGroupProps {
 export function LinksGroup({ icon: Icon, label, link, initiallyOpened, links }: LinksGroupProps) {
   const hasLinks = Array.isArray(links);
   // const [opened, setOpened] = useState(initiallyOpened || false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const [opened, setOpened] = useState(initiallyOpened || false);
   const items = (hasLinks ? links : []).map((subLink) => (
@@ -29,8 +30,20 @@ export function LinksGroup({ icon: Icon, label, link, initiallyOpened, links }: 
       <Link href={link} passHref className={classes.navbarLinks}>
         <UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
           <Group justify="space-between" gap={0}>
-            <Box style={{ display: 'flex', alignItems: 'center' }}>
-              <ThemeIcon variant="light" size={30}>
+            <Box
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                color: isHovered ? '#246EFF' : '#646464',
+              }}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <ThemeIcon
+                variant="light"
+                size={30}
+                style={{ color: isHovered ? '#246EFF' : '#646464' }}
+              >
                 <Icon className={classes.icon} style={{ width: rem(18), height: rem(18) }} />
               </ThemeIcon>
               <Box ml="md">{label}</Box>
