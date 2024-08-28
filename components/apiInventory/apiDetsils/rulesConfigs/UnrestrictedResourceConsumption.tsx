@@ -1,9 +1,13 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { Button, Flex, Group, Popover, Select, Switch, Text } from '@mantine/core';
+import { useState } from 'react';
 
 import { monoFont } from '@/app/fonts';
 
 export default function UnrestrictedResourceConsumption() {
+  const [reqRatevalue, setReqRateValue] = useState<string | null>('');
+  const [reqSizevalue, setReqSizeValue] = useState<string | null>('');
+
   return (
     <Flex
       mah={590}
@@ -67,26 +71,29 @@ export default function UnrestrictedResourceConsumption() {
               Error Code:
             </Text>
             <Flex w={197}>
-              <Popover position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                  <Button bg="#F4F4F4" c="#D57575" fw="500" size="sm" h={35} w={197}>
-                    413 Payload Too Large
-                  </Button>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Select
-                    placeholder="Pick limit value"
-                    data={[
-                      '200 OK',
-                      '403 Forbidden',
-                      '401 Unauthorized',
-                      '413 Payload Too Large',
-                      '429 Too Many Requests',
-                    ]}
-                    comboboxProps={{ withinPortal: false }}
-                  />
-                </Popover.Dropdown>
-              </Popover>
+              <Select
+                placeholder="Pick Response Code"
+                value={reqRatevalue}
+                onChange={setReqRateValue}
+                ml={23}
+                fw="500"
+                size="sm"
+                data={[
+                  '200 OK',
+                  '403 Forbidden',
+                  '401 Unauthorized',
+                  '413 Payload Too Large',
+                  '429 Too Many Requests',
+                ]}
+                maw={209}
+                styles={() => ({
+                  input: {
+                    backgroundColor: '#F4F4F4',
+                    borderRadius: '31px',
+                    color: '#D57575',
+                  },
+                })}
+              />
             </Flex>
           </Flex>
         </Flex>
@@ -135,26 +142,29 @@ export default function UnrestrictedResourceConsumption() {
               Error Code:
             </Text>
             <Flex w={197}>
-              <Popover position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                  <Button bg="#F4F4F4" c="#D57575" fw="500" size="sm" h={35} w={197}>
-                    429 Too Many Requests
-                  </Button>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Select
-                    placeholder="Pick value"
-                    data={[
-                      '200 OK',
-                      '403 Forbidden',
-                      '401 Unauthorized',
-                      '413 Payload Too Large',
-                      '429 Too Many Requests',
-                    ]}
-                    comboboxProps={{ withinPortal: false }}
-                  />
-                </Popover.Dropdown>
-              </Popover>
+              <Select
+                placeholder="Pick Response Code"
+                value={reqSizevalue}
+                onChange={setReqSizeValue}
+                ml={23}
+                fw="500"
+                size="sm"
+                data={[
+                  '200 OK',
+                  '403 Forbidden',
+                  '401 Unauthorized',
+                  '413 Payload Too Large',
+                  '429 Too Many Requests',
+                ]}
+                maw={209}
+                styles={() => ({
+                  input: {
+                    backgroundColor: '#F4F4F4',
+                    borderRadius: '31px',
+                    color: '#D57575',
+                  },
+                })}
+              />
             </Flex>
           </Flex>
         </Flex>

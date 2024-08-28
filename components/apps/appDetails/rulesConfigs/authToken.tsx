@@ -1,8 +1,23 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 
 import { Button, Flex, Group, Popover, Select, Text } from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
 
-import { monoFont } from '@/app/fonts';
+const EndpointsCode = `
+https://testserver.com/internals/phalanx/tokens
+`;
+const RequestHeadersCode = `
+{
+  "Authorization": "Bearer {{SHARED_SECRET}}"
+}
+`;
+const OutputCode = `
+{
+  "admin": "AUTH_TOKEN",
+  "alice": "AUTH_TOKEN",
+  "bob": "AUTH_TOKEN",
+}
+`;
 
 export default function AuthTokens() {
   return (
@@ -26,21 +41,22 @@ export default function AuthTokens() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Endpoints
         </Text>
-        <Flex
+        <CodeHighlight
           mah={110}
           w={950}
           mt={10}
           p={24}
           bg="#F4F4F4"
-          align="center"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            https://testserver.com/internals/phalanx/tokens
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={EndpointsCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
       {/* second  */}
       <Flex direction="column" align="flex-start" ml={24} mt={25}>
@@ -88,66 +104,44 @@ export default function AuthTokens() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Request Headers
         </Text>
-        <Flex
+        <CodeHighlight
           mah={110}
           w={950}
           mt={10}
-          bg="#F4F4F4"
-          align="center"
           p={24}
+          bg="#F4F4F4"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "Authorization": "Bearer '}
-              <Text component="span" fw={700}>
-                {'{{SHARED_SECRET}}'}
-              </Text>
-              {'"'}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={RequestHeadersCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
       {/* fourth  */}
       <Flex direction="column" align="flex-start" ml={24} mt={25}>
         <Text fw={500} size="sm" c="#6E6E6E">
           Output Should be in format:
         </Text>
-        <Flex
+        <CodeHighlight
           mah={160}
           w={950}
           mt={10}
-          bg="#F4F4F4"
-          align="center"
           p={24}
+          bg="#F4F4F4"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className} fw={400} c="gray">
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "admin": "AUTH_TOKEN", '}
-            </Text>
-
-            <Text pl={15} size="sm">
-              {'    "alice": "AUTH_TOKEN", '}
-            </Text>
-
-            <Text pl={15} size="sm">
-              {'    "bob": "AUTH_TOKEN", '}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={OutputCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
 
       {/* Button */}

@@ -2,7 +2,11 @@
 
 import { Button, Flex, Group, Text } from '@mantine/core';
 
-import { monoFont } from '@/app/fonts';
+import { CodeHighlight } from '@mantine/code-highlight';
+
+const BaseUrlCode = `
+https://testserver.com
+`;
 
 export default function BaseURL() {
   return (
@@ -22,7 +26,7 @@ export default function BaseURL() {
         Base URL
       </Text>
       {/* first  */}
-      <Flex
+      <CodeHighlight
         mah={110}
         w={950}
         mt={10}
@@ -30,13 +34,16 @@ export default function BaseURL() {
         mb={25}
         p={24}
         bg="#F4F4F4"
-        align="center"
         style={{
           borderRadius: '16px',
+          display: 'flex',
+          alignItems: 'center',
         }}
-      >
-        <Text className={monoFont.className}>https://testserver.com</Text>
-      </Flex>
+        withCopyButton={false}
+        code={BaseUrlCode}
+        language="tsx"
+        contentEditable
+      />
       {/* Button */}
       <Flex direction="row" ml={24} align="center" mb={24}>
         <Group>

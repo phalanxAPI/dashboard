@@ -3,6 +3,7 @@ import '@mantine/core/styles.css';
 import { theme } from '../theme';
 import ClientProvider from './client-provider';
 import '@mantine/charts/styles.css';
+import '@mantine/code-highlight/styles.css';
 
 export const metadata = {
   title: 'Mantine Next.js template',

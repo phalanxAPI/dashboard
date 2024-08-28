@@ -1,9 +1,22 @@
 /* eslint-disable react/jsx-curly-brace-presence */
-import { Button, Flex, Group, Popover, Select, Switch, Text } from '@mantine/core';
+import { Button, Flex, Group, Select, Switch, Text } from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
+import { useState } from 'react';
 
-import { monoFont } from '@/app/fonts';
-
+const RequestHeadersCode = `
+{
+  "Authorization": "Bearer {{bob.token}}"
+}
+`;
+const RequestBodyCode = `
+{
+  "name": "Test Property"
+  "isAdmin": "true"
+}
+`;
 export default function BrokenObjectPropertyLevelAuthorization() {
+  const [value, setValue] = useState<string | null>('');
+
   return (
     <Flex
       mah={590}
@@ -33,31 +46,22 @@ export default function BrokenObjectPropertyLevelAuthorization() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Request Headers
         </Text>
-        <Flex
+        <CodeHighlight
           h={110}
           w={950}
           mt={10}
           p={24}
           bg="#F4F4F4"
-          align="center"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "Authorization": "Bearer '}
-              <Text component="span" fw={700}>
-                {'{{bob.token}}'}
-              </Text>
-              {'"'}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={RequestHeadersCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
 
       {/* Second  */}
@@ -65,30 +69,22 @@ export default function BrokenObjectPropertyLevelAuthorization() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Request Body
         </Text>
-        <Flex
+        <CodeHighlight
           h={110}
           w={950}
           mt={10}
-          bg="#F4F4F4"
-          align="center"
           p={24}
+          bg="#F4F4F4"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "name": "Test Property"'}
-            </Text>
-            <Text pl={15} size="sm" fw={700}>
-              {'    "isAdmin": "true"'}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={RequestBodyCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
 
       {/* status code */}
@@ -96,26 +92,29 @@ export default function BrokenObjectPropertyLevelAuthorization() {
         <Text size="sm" c="#6E6E6E" fw="500">
           Expected Response Code:
         </Text>
-        <Popover width={300} position="bottom" withArrow shadow="md">
-          <Popover.Target>
-            <Button bg="#F4F4F4" ml={23} c="#D57575" fw="500" size="sm">
-              403 Forbidden
-            </Button>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Select
-              placeholder="Pick value"
-              data={[
-                '200 OK',
-                '403 Forbidden',
-                '401 Unauthorized',
-                '413 Payload Too Large',
-                '429 Too Many Requests',
-              ]}
-              comboboxProps={{ withinPortal: false }}
-            />
-          </Popover.Dropdown>
-        </Popover>
+        <Select
+          placeholder="Pick Response Code"
+          value={value}
+          onChange={setValue}
+          ml={23}
+          fw="500"
+          size="sm"
+          data={[
+            '200 OK',
+            '403 Forbidden',
+            '401 Unauthorized',
+            '413 Payload Too Large',
+            '429 Too Many Requests',
+          ]}
+          maw={209}
+          styles={() => ({
+            input: {
+              backgroundColor: '#F4F4F4',
+              borderRadius: '31px',
+              color: '#D57575',
+            },
+          })}
+        />
       </Flex>
 
       {/* Button */}

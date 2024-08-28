@@ -1,9 +1,27 @@
 /* eslint-disable react/jsx-curly-brace-presence */
-import { Button, Flex, Group, Popover, Select, Text } from '@mantine/core';
+import { Button, Flex, Group, Select, Text } from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
+import { useState } from 'react';
 
-import { monoFont } from '@/app/fonts';
-
+const RequestHeadersCode = `
+{
+  "Authorization": "Bearer {{admin.token}}"
+}
+`;
+const RequestParamsCode = `
+{
+  "id": "{{admin.id}}"
+}
+`;
+const RequestBodyCode = `
+{
+  "name": "Test Property",
+  "isAdmin": "true",
+  "email": "{{regex{^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$}}"
+}
+`;
 export default function SuccessFlow() {
+  const [value, setValue] = useState<string | null>('');
   return (
     <Flex
       mah={738}
@@ -26,31 +44,23 @@ export default function SuccessFlow() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Request Headers
         </Text>
-        <Flex
+
+        <CodeHighlight
           h={110}
           w={950}
           mt={10}
           p={24}
           bg="#F4F4F4"
-          align="center"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "Authorization": "Bearer '}
-              <Text component="span" fw={700}>
-                {'{{admin.token}}'}
-              </Text>
-              {'"'}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={RequestHeadersCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
 
       {/* Second  */}
@@ -58,97 +68,74 @@ export default function SuccessFlow() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Request Params
         </Text>
-        <Flex
+        <CodeHighlight
           h={110}
           w={950}
           mt={10}
-          bg="#F4F4F4"
-          align="center"
           p={24}
+          bg="#F4F4F4"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "id": '}
-              {'"'}
-              <Text component="span" fw={700}>
-                {'{{admin.id}}'}
-              </Text>
-              {'"'}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={RequestParamsCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
       {/* Third  */}
       <Flex direction="column" align="flex-start" ml={24} mt={25} mb={25}>
         <Text fw={500} size="sm" c="#6E6E6E">
           Request Body
         </Text>
-        <Flex
-          h={160}
+        <CodeHighlight
+          mah={160}
           w={950}
           mt={10}
-          bg="#F4F4F4"
-          align="center"
           p={24}
+          bg="#F4F4F4"
           style={{
             borderRadius: '16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        >
-          <Text className={monoFont.className}>
-            {'{'}
-            <br />
-            <Text pl={15} size="sm">
-              {'    "name": "Test Property", '}
-            </Text>
-
-            <Text pl={15} size="sm">
-              {'    "isAdmin": "true", '}
-            </Text>
-            <Text pl={15} size="sm">
-              {'    "email": '}
-              {'"'}
-              <Text component="span" fw={700}>
-                {'{{regex{^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$}}'}
-              </Text>
-              {'"'}
-            </Text>
-
-            {'}'}
-          </Text>
-        </Flex>
+          withCopyButton={false}
+          code={RequestBodyCode}
+          language="tsx"
+          contentEditable
+        />
       </Flex>
       {/* status code */}
       <Flex direction="row" ml={24} align="center" mb={25}>
         <Text size="sm" c="#6E6E6E" fw="500">
           Expected Response Code:
         </Text>
-        <Popover width={300} position="bottom" withArrow shadow="md">
-          <Popover.Target>
-            <Button bg="#F4F4F4" ml={23} c="#75D57F" fw="500" size="sm">
-              201 OK
-            </Button>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Select
-              placeholder="Pick value"
-              data={[
-                '200 OK',
-                '403 Forbidden',
-                '401 Unauthorized',
-                '413 Payload Too Large',
-                '429 Too Many Requests',
-              ]}
-              comboboxProps={{ withinPortal: false }}
-            />
-          </Popover.Dropdown>
-        </Popover>
+
+        <Select
+          placeholder="Pick Response Code"
+          value={value}
+          onChange={setValue}
+          ml={23}
+          fw="500"
+          size="sm"
+          data={[
+            '200 OK',
+            '403 Forbidden',
+            '401 Unauthorized',
+            '413 Payload Too Large',
+            '429 Too Many Requests',
+          ]}
+          maw={209}
+          styles={() => ({
+            input: {
+              backgroundColor: '#F4F4F4',
+              borderRadius: '31px',
+              color: '#75D57F',
+            },
+          })}
+        />
       </Flex>
 
       {/* Button */}
