@@ -8,7 +8,15 @@ import classes from './styles.module.css';
 import image from '../../../public/image.svg';
 import { monoFont } from '@/app/fonts';
 
-export function DetailsPageLayout({ children, pageTitle }: { children: any; pageTitle: string }) {
+export function DetailsPageLayout({
+  children,
+  pageTitle,
+  endpointLabel,
+}: {
+  children: any;
+  pageTitle: string;
+  endpointLabel: boolean;
+}) {
   const router = useRouter();
 
   const handleBackClick = () => {
@@ -25,21 +33,25 @@ export function DetailsPageLayout({ children, pageTitle }: { children: any; page
             <Text className={classes.gridtext} pl={8}>
               {pageTitle}
             </Text>
-            <Flex
-              h={31}
-              w={150}
-              ml={26}
-              style={{ borderRadius: '21px' }}
-              bg="#1E1E1E"
-              align="center"
-              justify="center"
-            >
-              {' '}
-              <Text fw={400} c="white" className={monoFont.className} size="sm">
+            {endpointLabel ? (
+              <Flex
+                h={31}
+                w={150}
+                ml={26}
+                style={{ borderRadius: '21px' }}
+                bg="#1E1E1E"
+                align="center"
+                justify="center"
+              >
                 {' '}
-                /api/v1/test/v1
-              </Text>
-            </Flex>
+                <Text fw={400} c="white" className={monoFont.className} size="sm">
+                  {' '}
+                  /api/v1/test/v1
+                </Text>
+              </Flex>
+            ) : (
+              ''
+            )}
           </div>
           <div className={classes.rightcont}>
             <div className={classes.iconcont}>

@@ -1,8 +1,15 @@
 import { Table, Pagination, Text } from '@mantine/core';
+import { useRouter } from 'next/navigation';
 import { IconExternalLink } from '@tabler/icons-react';
 import { monoFont } from '@/app/fonts';
 
 export function AppsDataTable() {
+  const router = useRouter();
+  const handleRowClick = (endpoint: string) => {
+    // eslint-disable-next-line no-console
+    router.push(`/apps/${endpoint}`);
+    // console.log(`Row clicked for endpoint: ${endpoint}`);
+  };
   const issuesData = [
     {
       name: 'Test Backend Server',
@@ -33,7 +40,13 @@ export function AppsDataTable() {
     let bgColor;
 
     return (
-      <Table.Tr key={index} className={monoFont.className} c="dimmed">
+      <Table.Tr
+        key={index}
+        className={monoFont.className}
+        c="dimmed"
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleRowClick(`api_${index}`)}
+      >
         <Table.Td fw={700}>
           <Text color={bgColor}> {element.name}</Text>
         </Table.Td>

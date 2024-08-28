@@ -1,6 +1,16 @@
 import { Box, Flex, Text } from '@mantine/core';
 import { monoFont } from '@/app/fonts';
 
+const apiData = {
+  column1: {
+    labels: ['App ID:', 'Hits:', 'Verified:'],
+    values: ['Backend Service IV', '425', 'True'],
+  },
+  column2: {
+    labels: ['Added:', 'Type:', 'Depriciated:'],
+    values: ['15/08/2024', 'POST', 'False'],
+  },
+};
 export default function APIInfo() {
   return (
     <Box
@@ -23,26 +33,18 @@ export default function APIInfo() {
         style={{ flexDirection: 'row' }}
       >
         <Box display="flex" style={{ flexDirection: 'column' }}>
-          <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
-            App ID:
-          </Text>
-          <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
-            Hits:
-          </Text>
-          <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
-            Verified:
-          </Text>
+          {apiData.column1.labels.map((label, index) => (
+            <Text key={index} fw={400} size="sm" c="#495057" className={monoFont.className} pb={11}>
+              {label}
+            </Text>
+          ))}
         </Box>
         <Box display="flex" style={{ flexDirection: 'column' }}>
-          <Text fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
-            Backend Service IV
-          </Text>
-          <Text fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
-            425
-          </Text>
-          <Text fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
-            True
-          </Text>
+          {apiData.column1.values.map((value, index) => (
+            <Text key={index} fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
+              {value}
+            </Text>
+          ))}
         </Box>
       </Flex>
       {/* 2nd column items */}
@@ -54,26 +56,18 @@ export default function APIInfo() {
         style={{ flexDirection: 'row' }}
       >
         <Box display="flex" style={{ flexDirection: 'column' }}>
-          <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
-            Added:
-          </Text>
-          <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
-            Type:
-          </Text>
-          <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
-            Depriciated:
-          </Text>
+          {apiData.column2.labels.map((label, index) => (
+            <Text key={index} fw={400} size="sm" c="#495057" className={monoFont.className} pb={11}>
+              {label}
+            </Text>
+          ))}
         </Box>
         <Box display="flex" style={{ flexDirection: 'column' }}>
-          <Text fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
-            15/08/2024
-          </Text>
-          <Text fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
-            POST
-          </Text>
-          <Text fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
-            False
-          </Text>
+          {apiData.column2.values.map((value, index) => (
+            <Text key={index} fw={900} size="sm" className={monoFont.className} c="#495057" pb={11}>
+              {value}
+            </Text>
+          ))}
         </Box>
       </Flex>
     </Box>

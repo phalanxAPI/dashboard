@@ -17,10 +17,10 @@ import UnsafeConsumptionAPIs from '@/components/apiInventory/apiDetsils/rulesCon
 import UnrestrictedResourceConsumption from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedResourceConsumption';
 import UnrestrictedAccessSensitiveBusinessFlows from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedAccessSensitiveBusinessFlows';
 
-export default function DetailsPage() {
+export default function APIDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
   return (
-    <DetailsPageLayout pageTitle="API Details">
+    <DetailsPageLayout pageTitle="API Details" endpointLabel>
       <APIInfo />
       <SegmentedControl
         value={selectedValue}
