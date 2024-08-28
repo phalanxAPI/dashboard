@@ -5,9 +5,11 @@ import { SegmentedControl } from '@mantine/core';
 
 import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
 
-import SuccessFlow from '@/components/apiInventory/apiDetsils/rulesConfigs/successFlow';
 import AppInfo from '@/components/apps/appDetails/appInfo';
 import AnalyticsChart from '@/components/apps/appDetails/analyticsChart';
+import BaseURL from '@/components/apps/appDetails/rulesConfigs/baseURL';
+import AuthTokens from '@/components/apps/appDetails/rulesConfigs/authToken';
+import UserData from '@/components/apps/appDetails/rulesConfigs/userData';
 
 export default function AppDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
@@ -28,7 +30,9 @@ export default function AppDetailsPage() {
         <AnalyticsChart />
       ) : (
         <>
-          <SuccessFlow />
+          <BaseURL />
+          <AuthTokens />
+          <UserData />
         </>
       )}
     </DetailsPageLayout>
