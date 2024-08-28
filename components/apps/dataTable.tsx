@@ -1,4 +1,4 @@
-import { Table, Pagination, Text } from '@mantine/core';
+import { Table, Pagination, Text, Flex } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { IconExternalLink } from '@tabler/icons-react';
 import { monoFont } from '@/app/fonts';
@@ -60,13 +60,18 @@ export function AppsDataTable() {
     );
   });
   return (
-    <div style={{ maxWidth: '1024px', marginBottom: '60px' }}>
+    <Flex
+      style={{
+        maxWidth: '1024px',
+        marginBottom: '60px',
+      }}
+      direction="column"
+    >
       <Table
         mah={636}
         horizontalSpacing="xl"
         verticalSpacing="sm"
         bgcolor="#ffffff"
-        mt={27}
         mb={26}
         style={{
           borderRadius: 22,
@@ -83,7 +88,15 @@ export function AppsDataTable() {
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
-      <Pagination total={12} style={{ display: 'flex', justifyContent: 'center' }} />
-    </div>
+      <Flex align="center" justify="center">
+        <Pagination
+          total={12}
+          style={{
+            position: 'absolute',
+            bottom: '61px',
+          }}
+        />
+      </Flex>
+    </Flex>
   );
 }
