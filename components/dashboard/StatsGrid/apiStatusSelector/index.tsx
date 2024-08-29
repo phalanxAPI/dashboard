@@ -1,23 +1,23 @@
 'use client';
 
-import { Select } from '@mantine/core';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
-export function APIStatusSelector() {
-  const [value, setValue] = useState<string | null>('');
+import { Select } from '@mantine/core';
+
+interface APIStatusSelectorProps {
+  value: string | null;
+  setValue: Dispatch<SetStateAction<string | null>>;
+  data: string[];
+}
+export function APIStatusSelector({ value, setValue, data }: APIStatusSelectorProps) {
   return (
     <Select
       placeholder="API Requests"
       value={value}
       onChange={setValue}
       defaultValue="API Requests"
-      data={[
-        'Backend Service I',
-        'Backend Service II',
-        'Backend Service III',
-        'Backend Service IV',
-      ]}
-      maw={143}
+      data={data}
+      maw={180}
       mah={32}
       styles={() => ({
         input: {

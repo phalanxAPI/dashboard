@@ -1,8 +1,41 @@
-import { IconAlertHexagon, IconShieldSearch, IconUnlink } from '@tabler/icons-react';
 import { Badge, Box, Flex, Text } from '@mantine/core';
+import { IconAlertHexagon, IconShieldSearch, IconUnlink } from '@tabler/icons-react';
+
+import useSWR from 'swr';
+import { AxiosResponse } from 'axios';
 import { monoFont, primaryFont } from '@/app/fonts';
+import { BASE_URL } from '@/utils/constants';
+import { genericAPIFetcher } from '@/utils/swr.helper';
 
 export default function StatusOverview() {
+  const { data, error } = useSWR<
+    AxiosResponse<{
+      openIssues: number;
+      lowSeverityIssues: number;
+      highSeverityIssues: number;
+    }>
+  >(
+    () => [
+      `${BASE_URL}/issuecount`,
+      'get',
+      {
+        params: {
+          appId: '66cdff10e4453dc3b625b1c3',
+        },
+      },
+    ],
+    genericAPIFetcher
+  );
+
+  if (!data && !error) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading data</Text>;
+  }
+
+  const elements = data?.data;
   return (
     <Box
       pt="xl"
@@ -58,7 +91,7 @@ export default function StatusOverview() {
             }}
           >
             <Text c="#FCB90D" size="xl" fw="bold" className={monoFont.className}>
-              84
+              {elements?.openIssues}
             </Text>
             <Text c="#656565" size="xs" fw="initial" className={primaryFont.className}>
               Open Issues
@@ -106,7 +139,7 @@ export default function StatusOverview() {
             }}
           >
             <Text c="#ED4216" size="xl" fw="bold">
-              13
+              {elements?.highSeverityIssues}
             </Text>
             <Text c="#656565" size="xs" fw="initial" className={primaryFont.className}>
               High Severity
@@ -155,7 +188,7 @@ export default function StatusOverview() {
             }}
           >
             <Text c="#1BAF21" size="xl" fw="bold">
-              71
+              {elements?.lowSeverityIssues}
             </Text>
             <Text c="#656565" size="xs" fw="initial" className={primaryFont.className}>
               Low Severity

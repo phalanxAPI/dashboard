@@ -67,7 +67,7 @@ export default function UnrestrictedResourceConsumption() {
                 ml={5}
                 fw="500"
                 size="sm"
-                data={['KB', ' MB', 'GB', 'TB']}
+                data={['KB', ' MB']}
                 maw={100}
                 styles={() => ({
                   input: {
@@ -144,7 +144,7 @@ export default function UnrestrictedResourceConsumption() {
                 ml={5}
                 fw="500"
                 size="sm"
-                data={['Seconds', ' Minutes', 'Houres']}
+                data={['Seconds', ' Minutes', 'Hours']}
                 styles={() => ({
                   input: {
                     backgroundColor: '#F4F4F4',

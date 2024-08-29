@@ -1,6 +1,35 @@
+import useSWR from 'swr';
+import { AxiosResponse } from 'axios';
 import { Box, Flex, Grid, RingProgress, Text } from '@mantine/core';
 
+import { BASE_URL } from '@/utils/constants';
+import { genericAPIFetcher } from '@/utils/swr.helper';
+import { SystemInfo } from '@/arsenal/types/system-info';
+
 export default function ServerStates() {
+  const { data, error } = useSWR<AxiosResponse<SystemInfo>>(
+    () => [
+      `${BASE_URL}/system-info`,
+      'get',
+      {
+        params: {
+          appId: '66cdff10e4453dc3b625b1c3',
+          serverId: '60d5ec49f8d2b341d8f8e8b8',
+        },
+      },
+    ],
+    genericAPIFetcher
+  );
+
+  if (!data && !error) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading data</Text>;
+  }
+
+  const elements = data?.data;
   return (
     <Box
       pt="xl"
@@ -28,7 +57,7 @@ export default function ServerStates() {
               sections={[{ value: 46, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  46%
+                  {elements?.cpuLoad}%
                 </Text>
               }
             />
@@ -47,7 +76,7 @@ export default function ServerStates() {
               sections={[{ value: 74, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  74%
+                  {elements?.memUsage.usagePercent}%
                 </Text>
               }
             />
@@ -66,7 +95,7 @@ export default function ServerStates() {
               sections={[{ value: 60, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  5GB/s
+                  {(elements?.networkStats?.[0]?.rx_sec || 0) / 1000} KB/s
                 </Text>
               }
             />
@@ -86,7 +115,7 @@ export default function ServerStates() {
               sections={[{ value: 98, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  98%
+                  {elements?.battery.percent}%
                 </Text>
               }
             />

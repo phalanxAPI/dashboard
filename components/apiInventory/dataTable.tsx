@@ -1,102 +1,56 @@
-import { Checkbox, Table, Pagination, Badge } from '@mantine/core';
+import { Checkbox, Table, Pagination, Badge, Text, Flex, Box } from '@mantine/core';
+import useSWR from 'swr';
+import { useState } from 'react';
+import { AxiosResponse } from 'axios';
+
 import { useRouter } from 'next/navigation';
 import { monoFont } from '@/app/fonts';
+import { genericAPIFetcher } from '@/utils/swr.helper';
+import { BASE_URL } from '@/utils/constants';
+import { API } from '@/arsenal/types/api';
+import { PaginatedData } from '@/types/pagination';
 
 export function APIInventoryDataTable() {
+  const [currentPage, setCurrentPage] = useState(1);
+  // Using SWR to fetch the data
+
+  const { data, error } = useSWR<AxiosResponse<PaginatedData<API[]>>>(
+    () => [
+      `${BASE_URL}/api-info`,
+      'get',
+      {
+        params: {
+          appId: '66cdff10e4453dc3b625b1c3',
+          perPage: 2,
+          page: currentPage,
+        },
+      },
+    ],
+    genericAPIFetcher
+  );
+
   const router = useRouter();
   const handleRowClick = (endpoint: string) => {
-    // eslint-disable-next-line no-console
     router.push(`/apiInventory/${endpoint}`);
-    // console.log(`Row clicked for endpoint: ${endpoint}`);
   };
 
-  const elements = [
-    {
-      type: 'GET',
-      endpoint: '/api/v1/users',
-      hits: 1500,
-      verified: true,
-      depreciated: false,
-      added: '2024-02-01',
-    },
-    {
-      type: 'POST',
-      endpoint: '/api/v1/auth/login',
-      hits: 3200,
-      verified: true,
-      depreciated: false,
-      added: '2023-11-12',
-    },
-    {
-      type: 'PUT',
-      endpoint: '/api/v1/products/update',
-      hits: 1100,
-      verified: true,
-      depreciated: false,
-      added: '2024-05-23',
-    },
-    {
-      type: 'DELETE',
-      endpoint: '/api/v1/orders/remove',
-      hits: 760,
-      verified: false,
-      depreciated: true,
-      added: '2022-09-15',
-    },
-    {
-      type: 'GET',
-      endpoint: '/api/v1/categories',
-      hits: 2900,
-      verified: true,
-      depreciated: false,
-      added: '2023-01-07',
-    },
-    {
-      type: 'POST',
-      endpoint: '/api/v1/reviews/submit',
-      hits: 450,
-      verified: false,
-      depreciated: false,
-      added: '2024-03-18',
-    },
-    {
-      type: 'GET',
-      endpoint: '/api/v1/test/v1',
-      hits: 800,
-      verified: true,
-      depreciated: false,
-      added: '2024-07-01',
-    },
-    {
-      type: 'PUT',
-      endpoint: '/api/v1/user/profile/update',
-      hits: 1300,
-      verified: true,
-      depreciated: false,
-      added: '2023-12-02',
-    },
-    {
-      type: 'DELETE',
-      endpoint: '/api/v1/posts/delete',
-      hits: 200,
-      verified: false,
-      depreciated: true,
-      added: '2021-06-25',
-    },
-    {
-      type: 'GET',
-      endpoint: '/api/v1/test/v1/status',
-      hits: 980,
-      verified: true,
-      depreciated: false,
-      added: '2024-08-10',
-    },
-  ];
+  if (!data && !error) {
+    return <Text>Loading...</Text>;
+  }
 
-  const rows = elements.map((element, index) => {
+  if (error) {
+    return <Text>Error loading data</Text>;
+  }
+
+  // Ensure that elements is always an array
+  const elements = data?.data.data || [];
+
+  const rows = elements.map((element: any) => {
     let bgColor;
 
-    switch (element.type) {
+    switch (
+      element.method // Use `method` instead of `type`
+    ) {
       case 'POST':
         bgColor = '#8BEA95';
         break;
@@ -115,13 +69,13 @@ export function APIInventoryDataTable() {
 
     return (
       <Table.Tr
-        key={index}
+        key={element._id}
         c="dimmed"
-        onClick={() => handleRowClick(`api_${index}`)}
+        onClick={() => handleRowClick(element.endpoint)}
         style={{ cursor: 'pointer' }}
       >
         <Table.Td className={monoFont.className} fw={700}>
-          <Badge color={bgColor}> {element.type}</Badge>
+          <Badge color={bgColor}>{element.method}</Badge> {/* Changed to element.method */}
         </Table.Td>
         <Table.Td className={monoFont.className} fw={400} style={{ fontSize: 14 }}>
           {element.endpoint}
@@ -131,7 +85,7 @@ export function APIInventoryDataTable() {
         </Table.Td>
         <Table.Td>
           <Checkbox
-            checked={element.verified}
+            checked={element.isVerified}
             styles={() => ({
               input: {
                 borderRadius: '100%',
@@ -143,8 +97,7 @@ export function APIInventoryDataTable() {
         </Table.Td>
         <Table.Td>
           <Checkbox
-            color="#E6A322"
-            checked={element.depreciated}
+            checked={element.isDeprecated}
             styles={() => ({
               input: {
                 borderRadius: '100%',
@@ -155,38 +108,48 @@ export function APIInventoryDataTable() {
           />
         </Table.Td>
         <Table.Td fw={500} style={{ fontSize: 14 }}>
-          {element.added}
+          {new Date(element.createdAt).toLocaleDateString()}
         </Table.Td>
       </Table.Tr>
     );
   });
+
   return (
-    <div style={{ maxWidth: '1024px', marginBottom: '60px' }}>
-      <Table
-        mah={636}
-        horizontalSpacing="xl"
-        verticalSpacing="md"
-        bgcolor="#ffffff"
-        mt={27}
-        mb={26}
-        style={{
-          borderRadius: 22,
-          fontSize: 14,
-        }}
-      >
-        <Table.Thead>
-          <Table.Tr style={{ color: '#495057' }}>
-            <Table.Th>Type</Table.Th>
-            <Table.Th>Endpoint</Table.Th>
-            <Table.Th>Hits</Table.Th>
-            <Table.Th>Verified</Table.Th>
-            <Table.Th>depreciated</Table.Th>
-            <Table.Th>Added</Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-      <Pagination total={12} style={{ display: 'flex', justifyContent: 'center' }} />
-    </div>
+    <Flex direction="column" style={{ justifyContent: 'space-between' }} mt={27}>
+      <div style={{ maxWidth: '1024px', marginBottom: '20px' }}>
+        <Table
+          mah={636}
+          horizontalSpacing="xl"
+          verticalSpacing="sm"
+          bgcolor="#ffffff"
+          mb={26}
+          style={{
+            borderRadius: 22,
+            fontSize: 14,
+            maxWidth: '1024px',
+            margin: '0 auto',
+          }}
+        >
+          <Table.Thead>
+            <Table.Tr style={{ color: '#495057' }}>
+              <Table.Th>Type</Table.Th>
+              <Table.Th>Endpoint</Table.Th>
+              <Table.Th>Hits</Table.Th>
+              <Table.Th>Verified</Table.Th>
+              <Table.Th>Depreciated</Table.Th>
+              <Table.Th>Added</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </div>
+      <Box style={{ flexShrink: '0', marginBottom: '61px', alignSelf: 'center' }}>
+        <Pagination
+          total={data?.data?.meta.totalPages || 1}
+          onChange={setCurrentPage}
+          value={currentPage}
+        />
+      </Box>
+    </Flex>
   );
 }

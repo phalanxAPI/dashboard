@@ -82,7 +82,7 @@ export default function AuthTokens() {
             ml={5}
             fw="500"
             size="sm"
-            data={['Seconds', ' Minutes', 'Houres']}
+            data={['Seconds', ' Minutes', 'Hours']}
             styles={() => ({
               input: {
                 backgroundColor: '#F4F4F4',
