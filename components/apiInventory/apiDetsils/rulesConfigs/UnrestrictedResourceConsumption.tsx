@@ -1,12 +1,15 @@
 /* eslint-disable react/jsx-curly-brace-presence */
-import { Button, Flex, Group, Popover, Select, Switch, Text } from '@mantine/core';
+import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine/core';
 import { useState } from 'react';
 
 import { monoFont } from '@/app/fonts';
 
 export default function UnrestrictedResourceConsumption() {
-  const [reqRatevalue, setReqRateValue] = useState<string | null>('');
-  const [reqSizevalue, setReqSizeValue] = useState<string | null>('');
+  const [reqRateLimitvalue, setReqRateLimitValue] = useState<string | null>('');
+  const [reqRateCodevalue, setReqRateCodeValue] = useState<string | null>('');
+
+  const [reqSizelimitvalue, setReqSizeLimitValue] = useState<string | null>('');
+  const [reqSizeCodevalue, setReqSizeCodeValue] = useState<string | null>('');
 
   return (
     <Flex
@@ -50,31 +53,41 @@ export default function UnrestrictedResourceConsumption() {
               Limit:
             </Text>
             <Flex w={197}>
-              <Popover position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                  <Button bg="#F4F4F4" c="#282626" fw="500" size="sm" maw={80} h={35}>
-                    20 MB
-                  </Button>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Select
-                    placeholder="Pick value"
-                    data={['20MB', '40MB', '60MB', '80MB', '100MB']}
-                    comboboxProps={{ withinPortal: false }}
-                  />
-                </Popover.Dropdown>
-              </Popover>
+              <NumberInput
+                variant="filled"
+                placeholder="20"
+                allowNegative={false}
+                allowDecimal={false}
+                ml={23}
+              />
+              <Select
+                placeholder="MB"
+                value={reqSizelimitvalue}
+                onChange={setReqSizeLimitValue}
+                ml={5}
+                fw="500"
+                size="sm"
+                data={['KB', ' MB', 'GB', 'TB']}
+                maw={100}
+                styles={() => ({
+                  input: {
+                    backgroundColor: '#F4F4F4',
+                    borderRadius: '31px',
+                    color: '#D57575',
+                  },
+                })}
+              />
             </Flex>
           </Flex>
           <Flex direction="row" w={300} align="center" mt={8} justify="space-between">
             <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
               Error Code:
             </Text>
-            <Flex w={197}>
+            <Flex w={200}>
               <Select
                 placeholder="Pick Response Code"
-                value={reqRatevalue}
-                onChange={setReqRateValue}
+                value={reqSizeCodevalue}
+                onChange={setReqSizeCodeValue}
                 ml={23}
                 fw="500"
                 size="sm"
@@ -115,26 +128,31 @@ export default function UnrestrictedResourceConsumption() {
             <Text fw={400} size="sm" c="#495057" className={monoFont.className}>
               Limit:
             </Text>
-            <Flex w={197}>
-              <Popover position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                  <Button bg="#F4F4F4" c="#282626" fw="500" size="sm" maw={125} h={35}>
-                    150 / minute
-                  </Button>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Select
-                    placeholder="Pick request rate"
-                    data={[
-                      '150 requests/minute',
-                      '300 requests/minute',
-                      '500 requests/minute',
-                      '1000 requests/minute',
-                    ]}
-                    comboboxProps={{ withinPortal: false }}
-                  />
-                </Popover.Dropdown>
-              </Popover>
+            <Flex w={200}>
+              <NumberInput
+                variant="filled"
+                placeholder="150"
+                allowNegative={false}
+                allowDecimal={false}
+                ml={23}
+                maw={65}
+              />
+              <Select
+                placeholder="Minutes"
+                value={reqRateLimitvalue}
+                onChange={setReqRateLimitValue}
+                ml={5}
+                fw="500"
+                size="sm"
+                data={['Seconds', ' Minutes', 'Houres']}
+                styles={() => ({
+                  input: {
+                    backgroundColor: '#F4F4F4',
+                    borderRadius: '31px',
+                    color: '#D57575',
+                  },
+                })}
+              />
             </Flex>
           </Flex>
           <Flex direction="row" w={300} align="center" mt={8} justify="space-between">
@@ -144,8 +162,8 @@ export default function UnrestrictedResourceConsumption() {
             <Flex w={197}>
               <Select
                 placeholder="Pick Response Code"
-                value={reqSizevalue}
-                onChange={setReqSizeValue}
+                value={reqRateCodevalue}
+                onChange={setReqRateCodeValue}
                 ml={23}
                 fw="500"
                 size="sm"

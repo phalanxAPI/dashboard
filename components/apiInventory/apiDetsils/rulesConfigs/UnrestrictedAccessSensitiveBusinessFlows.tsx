@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-curly-brace-presence */
-import { Button, Flex, Group, Popover, Select, Switch, Text } from '@mantine/core';
+import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine/core';
 import { useState } from 'react';
 
 import { monoFont } from '@/app/fonts';
@@ -49,20 +49,14 @@ export default function UnrestrictedAccessSensitiveBusinessFlows() {
               Limit:
             </Text>
             <Flex w={197}>
-              <Popover position="bottom" withArrow shadow="md">
-                <Popover.Target>
-                  <Button bg="#F4F4F4" c="#282626" fw="500" size="sm" maw={80} h={35}>
-                    1
-                  </Button>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Select
-                    placeholder="Pick unique payload"
-                    data={['1', '2', '5', '10', '20']}
-                    comboboxProps={{ withinPortal: false }}
-                  />
-                </Popover.Dropdown>
-              </Popover>
+              <NumberInput
+                variant="filled"
+                placeholder="20"
+                allowNegative={false}
+                allowDecimal={false}
+                ml={23}
+                maw={80}
+              />
             </Flex>
           </Flex>
           <Flex direction="row" w={300} align="center" mt={8} justify="space-between">
