@@ -1,6 +1,26 @@
 import { Button, Flex, Group, Switch, Text } from '@mantine/core';
+import { useEffect, useState } from 'react';
 
-export default function SecurityMisconfiguration() {
+import { SecurityConfiguration } from '@/arsenal/types/security-conf';
+
+export default function SecurityMisconfiguration({
+  configData,
+}: {
+  configData: SecurityConfiguration[];
+}) {
+  const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const successFlowData = configData.find(
+      (config) => config.configType === 'BROKEN_AUTHENTICATION'
+    );
+    setFilteredData(successFlowData || null);
+
+    setChecked(successFlowData?.isEnabled ?? false);
+  }, [JSON.stringify(configData)]);
+
   return (
     <Flex
       mah={590}
@@ -21,7 +41,12 @@ export default function SecurityMisconfiguration() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Enabled
         </Text>
-        <Switch defaultChecked ml={18} color="#246EFF" />
+        <Switch
+          checked={checked}
+          onChange={(event) => setChecked(event.currentTarget.checked)}
+          ml={18}
+          color="#246EFF"
+        />
       </Flex>
 
       {/* Button */}

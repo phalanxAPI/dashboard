@@ -1,17 +1,22 @@
 import { Box, Flex, Text } from '@mantine/core';
 import { monoFont } from '@/app/fonts';
 
-const apiData = {
-  column1: {
-    labels: ['App ID:', 'Hits:', 'Verified:'],
-    values: ['Backend Service IV', '425', 'True'],
-  },
-  column2: {
-    labels: ['Added:', 'Type:', 'Depriciated:'],
-    values: ['15/08/2024', 'POST', 'False'],
-  },
-};
-export default function APIInfo() {
+export default function APIInfo({ data }: { data: Record<string, any> }) {
+  console.log('DATA', data);
+  const apiData = {
+    column1: {
+      labels: ['App ID:', 'Hits:', 'Verified:'],
+      values: [data.appId, data.hits, data.isVerified ? 'True' : 'False'],
+    },
+    column2: {
+      labels: ['Added:', 'Type:', 'Depriciated:'],
+      values: [
+        new Date(data.createdAt).toLocaleDateString(),
+        data.method,
+        data.isDeprecated ? 'True' : 'False',
+      ],
+    },
+  };
   return (
     <Box
       p="lg"

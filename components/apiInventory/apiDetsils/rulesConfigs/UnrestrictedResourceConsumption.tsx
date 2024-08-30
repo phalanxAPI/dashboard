@@ -3,8 +3,13 @@ import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine
 import { useState } from 'react';
 
 import { monoFont } from '@/app/fonts';
+import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
-export default function UnrestrictedResourceConsumption() {
+export default function UnrestrictedResourceConsumption({
+  configData,
+}: {
+  configData: SecurityConfiguration[];
+}) {
   const [reqRateLimitvalue, setReqRateLimitValue] = useState<string | null>('');
   const [reqRateCodevalue, setReqRateCodeValue] = useState<string | null>('');
 
@@ -13,7 +18,6 @@ export default function UnrestrictedResourceConsumption() {
 
   return (
     <Flex
-      mah={590}
       mb={45}
       maw={1000}
       direction="column"
@@ -48,11 +52,11 @@ export default function UnrestrictedResourceConsumption() {
           w={306}
           style={{ flexDirection: 'column' }}
         >
-          <Flex direction="row" w={300} align="center" justify="space-between">
+          <Flex direction="row" w={320} align="center" justify="space-between">
             <Text fw={400} size="sm" c="#495057" className={monoFont.className}>
               Limit:
             </Text>
-            <Flex w={197}>
+            <Flex w={209}>
               <NumberInput
                 variant="filled"
                 placeholder="20"
@@ -79,11 +83,11 @@ export default function UnrestrictedResourceConsumption() {
               />
             </Flex>
           </Flex>
-          <Flex direction="row" w={300} align="center" mt={8} justify="space-between">
+          <Flex direction="row" w={320} align="center" mt={8} justify="space-between">
             <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
               Error Code:
             </Text>
-            <Flex w={200}>
+            <Flex w={209}>
               <Select
                 placeholder="Pick Response Code"
                 value={reqSizeCodevalue}
@@ -124,11 +128,11 @@ export default function UnrestrictedResourceConsumption() {
           w={306}
           style={{ flexDirection: 'column' }}
         >
-          <Flex direction="row" w={300} align="center" justify="space-between">
+          <Flex direction="row" w={320} align="center" justify="space-between">
             <Text fw={400} size="sm" c="#495057" className={monoFont.className}>
               Limit:
             </Text>
-            <Flex w={200}>
+            <Flex w={209}>
               <NumberInput
                 variant="filled"
                 placeholder="150"
@@ -155,11 +159,11 @@ export default function UnrestrictedResourceConsumption() {
               />
             </Flex>
           </Flex>
-          <Flex direction="row" w={300} align="center" mt={8} justify="space-between">
+          <Flex direction="row" w={320} align="center" mt={8} justify="space-between">
             <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
               Error Code:
             </Text>
-            <Flex w={197}>
+            <Flex maw={209}>
               <Select
                 placeholder="Pick Response Code"
                 value={reqRateCodevalue}

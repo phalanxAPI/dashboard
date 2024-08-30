@@ -1,8 +1,7 @@
-import { Table, Pagination, Text, Flex } from '@mantine/core';
+import { Table, Pagination, Text, Flex, Skeleton } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { IconExternalLink } from '@tabler/icons-react';
 import { AxiosResponse } from 'axios';
-
 import { useState } from 'react';
 import useSWR from 'swr';
 import { BASE_URL } from '@/utils/constants';
@@ -14,23 +13,13 @@ import { monoFont } from '@/app/fonts';
 export function AppsDataTable() {
   const router = useRouter();
   const handleRowClick = (endpoint: string) => {
-    // eslint-disable-next-line no-console
     router.push(`/apps/${endpoint}`);
-    // console.log(`Row clicked for endpoint: ${endpoint}`);
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  // Using SWR to fetch the data
 
-  // eslint-disable-next-line no-spaced-func
-  const { data, error } = useSWR<
-    AxiosResponse<
-      PaginatedData<
-        (Application & {
-          serverCount: number;
-        })[]
-      >
-    >
+  const { data, error, isLoading } = useSWR<
+    AxiosResponse<PaginatedData<(Application & { serverCount: number; __v: number })[]>>
   >(
     () => [
       `${BASE_URL}/applications`,
@@ -45,68 +34,51 @@ export function AppsDataTable() {
     ],
     genericAPIFetcher
   );
-  // const issuesData = [
-  //   {
-  //     name: 'Test Backend Server',
-  //     active_servers: '10',
-  //     hits: '500',
-  //     configure: 'api/configure',
-  //   },
-  //   {
-  //     name: 'UI Server',
-  //     active_servers: '5',
-  //     hits: '100',
-  //     configure: 'api/configure',
-  //   },
-  //   {
-  //     name: 'Primary Pod',
-  //     active_servers: '4',
-  //     hits: '80',
-  //     configure: 'api/configure',
-  //   },
-  //   {
-  //     name: 'Test Backend Server',
-  //     active_servers: '10',
-  //     hits: '500',
-  //     configure: 'api/configure',
-  //   },
-  // ];
 
-  if (!data && !error) {
-    return <Text>Loading...</Text>;
+  if (isLoading) {
+    return <Skeleton height={200} radius="xl" maw={1024} />;
   }
 
   if (error) {
     return <Text>Error loading data</Text>;
   }
 
-  // Ensure that elements is always an array
   const elements = data?.data.data || [];
-  const rows = elements.map((element, index) => {
-    let bgColor;
-    const handleIconClick = () => {
-      window.location.href = `${element.baseUrl}`;
-    };
-    return (
-      <Table.Tr
-        key={index}
-        className={monoFont.className}
-        c="dimmed"
-        style={{ cursor: 'pointer' }}
-        onClick={() => handleRowClick(`api_${index}`)}
-      >
-        <Table.Td fw={700}>
-          <Text color={bgColor}> {element.name}</Text>
-        </Table.Td>
-        <Table.Td fw={400}>{element.serverCount}</Table.Td>
-        <Table.Td fw={500}>{0}</Table.Td>
 
-        <Table.Td fw={500}>
-          <IconExternalLink style={{ cursor: 'pointer' }} onClick={handleIconClick} />
+  const rows =
+    elements.length > 0 ? (
+      elements.map((element, index) => (
+        <Table.Tr
+          key={index}
+          className={monoFont.className}
+          c="dimmed"
+          style={{ cursor: 'pointer' }}
+          onClick={() => handleRowClick(element.name)}
+        >
+          <Table.Td fw={700}>
+            <Text>{element.name}</Text>
+          </Table.Td>
+          <Table.Td fw={400}>{element.serverCount}</Table.Td>
+          <Table.Td fw={500}>{element.__v}</Table.Td>
+          <Table.Td fw={500} style={{ textAlign: 'center' }}>
+            <IconExternalLink
+              style={{ cursor: 'pointer' }}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent triggering row click
+                window.location.href = `${element.baseUrl}`;
+              }}
+            />
+          </Table.Td>
+        </Table.Tr>
+      ))
+    ) : (
+      <Table.Tr className={monoFont.className} c="dimmed">
+        <Table.Td colSpan={4} style={{ textAlign: 'center' }}>
+          No Data Available
         </Table.Td>
       </Table.Tr>
     );
-  });
+
   return (
     <Flex
       style={{

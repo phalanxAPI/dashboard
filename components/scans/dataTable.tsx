@@ -1,4 +1,4 @@
-import { Table, Pagination, Flex, Text } from '@mantine/core';
+import { Table, Pagination, Flex, Text, Skeleton } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -11,10 +11,8 @@ import { monoFont } from '@/app/fonts';
 
 export function ScansDataTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  // Using SWR to fetch the data
 
-  // eslint-disable-next-line no-spaced-func
-  const { data, error } = useSWR<AxiosResponse<PaginatedData<Scan[]>>>(
+  const { data, error, isLoading } = useSWR<AxiosResponse<PaginatedData<Scan[]>>>(
     () => [
       `${BASE_URL}/scans`,
       'get',
@@ -28,109 +26,36 @@ export function ScansDataTable() {
     ],
     genericAPIFetcher
   );
-  // const ScansData = [
-  //   {
-  //     severity: 'HIGH',
-  //     name: 'Broken Object Level Authorization',
-  //     assignee: 'John Doe',
-  //     status: 'Open',
-  //     raised_at: '15/09/2024',
-  //     endpoint: '/api/v1/users',
-  //   },
-  //   {
-  //     severity: 'LOW',
-  //     name: 'Missing Rate Limiting',
-  //     assignee: 'Jane Smith',
-  //     status: 'Open',
-  //     raised_at: '22/06/2024',
-  //     endpoint: '/api/v1/products/update',
-  //   },
-  //   {
-  //     severity: 'HIGH',
-  //     name: 'Sensitive Data Exposure',
-  //     assignee: '-',
-  //     status: 'Open',
-  //     raised_at: '12/05/2024',
-  //     endpoint: '/api/v1/auth/login',
-  //   },
-  //   {
-  //     severity: 'LOW',
-  //     name: 'Deprecated Endpoint Usage',
-  //     assignee: '-',
-  //     status: 'Open',
-  //     raised_at: '19/03/2024',
-  //     endpoint: '/api/v1/orders/remove',
-  //   },
-  //   {
-  //     severity: 'HIGH',
-  //     name: 'Broken Authentication',
-  //     assignee: '-',
-  //     status: 'Open',
-  //     raised_at: '09/04/2024',
-  //     endpoint: '/api/v1/reviews/submit',
-  //   },
-  //   {
-  //     severity: 'LOW',
-  //     name: 'Exposed Sensitive Information',
-  //     assignee: 'David Black',
-  //     status: 'Open',
-  //     raised_at: '14/12/2023',
-  //     endpoint: '/api/v1/test/v1',
-  //   },
-  //   {
-  //     severity: 'HIGH',
-  //     name: 'Insecure Direct Object References',
-  //     assignee: 'Eva Green',
-  //     status: 'Open',
-  //     raised_at: '03/07/2024',
-  //     endpoint: '/api/v1/user/profile/update',
-  //   },
-  //   {
-  //     severity: 'LOW',
-  //     name: 'Improper Input Validation',
-  //     assignee: 'Frank Harris',
-  //     status: 'Open',
-  //     raised_at: '25/01/2024',
-  //     endpoint: '/api/v1/categories',
-  //   },
-  //   {
-  //     severity: 'HIGH',
-  //     name: 'Cross-Site Scripting (XSS)',
-  //     assignee: 'Grace Lee',
-  //     status: 'Open',
-  //     raised_at: '30/08/2024',
-  //     endpoint: '/api/v1/posts/delete',
-  //   },
-  //   {
-  //     severity: 'LOW',
-  //     name: 'Improper Error Handling',
-  //     assignee: 'Henry King',
-  //     status: 'Open',
-  //     raised_at: '11/07/2024',
-  //     endpoint: '/api/v1/test/v1/status',
-  //   },
-  // ];
 
-  if (!data && !error) {
-    return <Text>Loading...</Text>;
+  if (isLoading) {
+    return <Skeleton mah={636} mt={27} height={200} radius="xl" maw={1024} />;
   }
 
   if (error) {
     return <Text>Error loading data</Text>;
   }
 
-  // Ensure that elements is always an array
   const elements = data?.data.data || [];
-  const rows = elements.map((element, index) => (
-    <Table.Tr key={index} className={monoFont.className} c="dimmed">
-      {/* <Table.Td fw={500}>{element.assignee}</Table.Td> */}
-      <Table.Td style={{ color: '#E55708' }}>{element.status}</Table.Td>
-      <Table.Td>{new Date(element.scanDate).toLocaleDateString()}</Table.Td>
-      <Table.Td fw={500}>
-        <IconExternalLink style={{ cursor: 'pointer' }}></IconExternalLink>
-      </Table.Td>
-    </Table.Tr>
-  ));
+
+  const rows =
+    elements.length > 0 ? (
+      elements.map((element, index) => (
+        <Table.Tr key={index} className={monoFont.className} c="dimmed">
+          <Table.Td style={{ color: '#E55708' }}>{element.status}</Table.Td>
+          <Table.Td>{new Date(element.scanDate).toLocaleDateString()}</Table.Td>
+          <Table.Td fw={500}>
+            <IconExternalLink style={{ cursor: 'pointer' }} onClick={() => {}} />
+          </Table.Td>
+        </Table.Tr>
+      ))
+    ) : (
+      <Table.Tr className={monoFont.className} c="dimmed">
+        <Table.Td colSpan={3} style={{ textAlign: 'center' }}>
+          No Data Available
+        </Table.Td>
+      </Table.Tr>
+    );
+
   return (
     <Flex style={{ maxWidth: '1024px', marginBottom: '60px' }} direction="column">
       <Table
@@ -147,9 +72,6 @@ export function ScansDataTable() {
       >
         <Table.Thead>
           <Table.Tr style={{ color: '#495057' }}>
-            {/* <Table.Th>Severity</Table.Th> */}
-            {/* <Table.Th>Issue</Table.Th> */}
-            {/* <Table.Th>Assignee</Table.Th> */}
             <Table.Th>Status</Table.Th>
             <Table.Th>Scan Date</Table.Th>
             <Table.Th>Endpoint</Table.Th>

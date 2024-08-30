@@ -1,11 +1,29 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { monoFont } from '@/app/fonts';
+import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
-export default function UnrestrictedAccessSensitiveBusinessFlows() {
-  const [value, setValue] = useState<string | null>('');
+export default function UnrestrictedAccessSensitiveBusinessFlows({
+  configData,
+}: {
+  configData: SecurityConfiguration[];
+}) {
+  const [codevalue, setCodeValue] = useState<string | null>('');
+  const [limitvalue, setLimitValue] = useState<string | number>('');
+  const [checked, setChecked] = useState(false);
+  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+
+  useEffect(() => {
+    const successFlowData = configData.find(
+      (config) => config.configType === 'UNRESTRICTED_ACCESS_TO_SENSITIVE_BUSINESS_FLOW'
+    );
+    // setFilteredData(successFlowData || null);
+    setCodeValue(successFlowData?.rules?.expectations.code?.toString());
+    setLimitValue(successFlowData?.rules?.limit);
+    setChecked(successFlowData?.isEnabled ?? false);
+  }, [JSON.stringify(configData)]);
 
   return (
     <Flex
@@ -28,7 +46,12 @@ export default function UnrestrictedAccessSensitiveBusinessFlows() {
         <Text fw={500} size="sm" c="#6E6E6E">
           Enabled
         </Text>
-        <Switch defaultChecked ml={18} color="#246EFF" />
+        <Switch
+          checked={checked}
+          onChange={(event) => setChecked(event.currentTarget.checked)}
+          ml={18}
+          color="#246EFF"
+        />
       </Flex>
 
       {/* first  */}
@@ -44,39 +67,55 @@ export default function UnrestrictedAccessSensitiveBusinessFlows() {
           w={306}
           style={{ flexDirection: 'column' }}
         >
-          <Flex direction="row" w={300} align="center" justify="space-between">
+          <Flex direction="row" w={320} align="center" justify="space-between">
             <Text fw={400} size="sm" c="#495057" className={monoFont.className}>
               Limit:
             </Text>
-            <Flex w={197}>
+            <Flex w={209}>
               <NumberInput
                 variant="filled"
                 placeholder="20"
                 allowNegative={false}
                 allowDecimal={false}
                 ml={23}
-                maw={80}
+                value={limitvalue}
+                onChange={setLimitValue}
+                maw={60}
               />
             </Flex>
           </Flex>
-          <Flex direction="row" w={300} align="center" mt={8} justify="space-between">
+          <Flex direction="row" w={320} align="center" mt={8} justify="space-between">
             <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
               Error Code:
             </Text>
-            <Flex w={197}>
+            <Flex w={209}>
               <Select
                 placeholder="Pick Response Code"
-                value={value}
-                onChange={setValue}
+                value={codevalue?.toString()}
+                onChange={setCodeValue}
                 ml={23}
                 fw="500"
                 size="sm"
                 data={[
-                  '200 OK',
-                  '403 Forbidden',
-                  '401 Unauthorized',
-                  '413 Payload Too Large',
-                  '429 Too Many Requests',
+                  {
+                    label: '200 Success',
+                    value: '200',
+                  },
+
+                  { label: '204 No Content', value: '204' },
+                  { label: '301 Moved Permanently', value: '301' },
+                  { label: '302 Found', value: '302' },
+                  { label: '304 Not Modified', value: '304' },
+                  { label: '400 Bad Request', value: '400' },
+                  { label: '401 Unauthorized', value: '401' },
+                  { label: '403 Forbidden', value: '403' },
+                  { label: '404 Not Found', value: '404' },
+                  { label: '500 Internal Server Error', value: '500' },
+                  { label: '502 Bad Gateway', value: '502' },
+                  { label: '503 Service Unavailable', value: '503' },
+                  { label: '504 Gateway Timeout', value: '504' },
+                  { label: '413 Payload Too Large', value: '413' },
+                  { label: '429 Too Many Requests', value: '429' },
                 ]}
                 maw={209}
                 styles={() => ({

@@ -12,10 +12,12 @@ export function DetailsPageLayout({
   children,
   pageTitle,
   endpointLabel,
+  endpoint,
 }: {
   children: any;
   pageTitle: string;
   endpointLabel: boolean;
+  endpoint: string;
 }) {
   const router = useRouter();
 
@@ -36,8 +38,9 @@ export function DetailsPageLayout({
             {endpointLabel ? (
               <Flex
                 h={31}
-                w={150}
+                // w={150}
                 ml={26}
+                p={10}
                 style={{ borderRadius: '21px' }}
                 bg="#1E1E1E"
                 align="center"
@@ -46,7 +49,7 @@ export function DetailsPageLayout({
                 {' '}
                 <Text fw={400} c="white" className={monoFont.className} size="sm">
                   {' '}
-                  /api/v1/test/v1
+                  {endpoint}
                 </Text>
               </Flex>
             ) : (

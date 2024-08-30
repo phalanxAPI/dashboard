@@ -1,4 +1,4 @@
-import { Badge, Box, Flex, Text } from '@mantine/core';
+import { Badge, Box, Flex, Skeleton, Text } from '@mantine/core';
 import { IconAlertHexagon, IconShieldSearch, IconUnlink } from '@tabler/icons-react';
 
 import useSWR from 'swr';
@@ -8,7 +8,7 @@ import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 
 export default function StatusOverview() {
-  const { data, error } = useSWR<
+  const { data, error, isLoading } = useSWR<
     AxiosResponse<{
       openIssues: number;
       lowSeverityIssues: number;
@@ -27,8 +27,8 @@ export default function StatusOverview() {
     genericAPIFetcher
   );
 
-  if (!data && !error) {
-    return <Text>Loading...</Text>;
+  if (isLoading) {
+    return <Skeleton height={350} mt={6} radius="xl" />;
   }
 
   if (error) {

@@ -1,4 +1,4 @@
-import { Box, ComboboxItem, Text } from '@mantine/core';
+import { Box, Skeleton, Text } from '@mantine/core';
 import { useState } from 'react';
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
@@ -41,7 +41,7 @@ export default function ApiStatusChart() {
     { name: 'api7', server1: 3490, server2: 4300, server3: (3490 + 4300) / 2 },
   ];
 
-  const { data, error } = useSWR<
+  const { data, error, isLoading } = useSWR<
     AxiosResponse<
       {
         time: Date;
@@ -60,15 +60,15 @@ export default function ApiStatusChart() {
     genericAPIFetcher
   );
 
-  if (!data && !error) {
-    return <Text>Loading...</Text>;
+  if (isLoading) {
+    return <Skeleton height={350} mt={6} radius="xl" />;
   }
 
   if (error) {
     return <Text>Error loading data</Text>;
   }
 
-  const elements = data?.data;
+  const elements = data?.data || [];
   console.log(elements);
   return (
     <Box

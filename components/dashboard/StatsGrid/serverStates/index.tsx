@@ -1,13 +1,13 @@
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
-import { Box, Flex, Grid, RingProgress, Text } from '@mantine/core';
+import { Box, Flex, Grid, RingProgress, Skeleton, Text } from '@mantine/core';
 
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 import { SystemInfo } from '@/arsenal/types/system-info';
 
 export default function ServerStates() {
-  const { data, error } = useSWR<AxiosResponse<SystemInfo>>(
+  const { data, error, isLoading } = useSWR<AxiosResponse<SystemInfo>>(
     () => [
       `${BASE_URL}/system-info`,
       'get',
@@ -21,8 +21,8 @@ export default function ServerStates() {
     genericAPIFetcher
   );
 
-  if (!data && !error) {
-    return <Text>Loading...</Text>;
+  if (isLoading) {
+    return <Skeleton height={350} mt={6} radius="xl" />;
   }
 
   if (error) {
