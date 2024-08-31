@@ -19,7 +19,9 @@ export function AppsDataTable() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data, error, isLoading } = useSWR<
-    AxiosResponse<PaginatedData<(Application & { serverCount: number; __v: number })[]>>
+    AxiosResponse<
+      PaginatedData<(Application & { serverCount: number; __v: number; _id: string })[]>
+    >
   >(
     () => [
       `${BASE_URL}/applications`,
@@ -27,7 +29,7 @@ export function AppsDataTable() {
       {
         params: {
           appId: '66cdff10e4453dc3b625b1c3',
-          perPage: 2,
+          perPage: 10,
           page: currentPage,
         },
       },
@@ -53,7 +55,7 @@ export function AppsDataTable() {
           className={monoFont.className}
           c="dimmed"
           style={{ cursor: 'pointer' }}
-          onClick={() => handleRowClick(element.name)}
+          onClick={() => handleRowClick(element._id)}
         >
           <Table.Td fw={700}>
             <Text>{element.name}</Text>
@@ -110,7 +112,7 @@ export function AppsDataTable() {
       </Table>
       <Flex align="center" justify="center">
         <Pagination
-          total={data?.data?.meta.totalPages || 1}
+          total={data?.data?.meta?.totalPages || 1}
           onChange={setCurrentPage}
           value={currentPage}
         />

@@ -81,7 +81,7 @@ export function ScansDataTable() {
       </Table>
       <Flex align="center" justify="center">
         <Pagination
-          total={data?.data?.meta.totalPages || 1}
+          total={data?.data?.meta?.totalPages || 1}
           onChange={setCurrentPage}
           value={currentPage}
         />

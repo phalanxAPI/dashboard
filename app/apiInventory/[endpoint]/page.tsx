@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
-import { SegmentedControl, Text } from '@mantine/core';
+import { Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
 
 import APIInfo from '@/components/apiInventory/apiDetsils/apiInfo';
 import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
@@ -68,7 +68,12 @@ export default function APIDetailsPage() {
     genericAPIFetcher
   );
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <Flex direction="column">
+        <Skeleton mah={636} mt={27} height={250} radius="xl" maw={1024} ml={30} />
+        <Skeleton mah={636} mt={27} height={380} radius="xl" maw={1024} ml={30} />
+      </Flex>
+    );
   }
 
   if (error) {
@@ -80,7 +85,7 @@ export default function APIDetailsPage() {
   const apiEndpoint = apiInfoData.endpoint;
 
   if (isLoading2) {
-    return <Text>Loading...</Text>;
+    return <Text>is loading data</Text>;
   }
 
   if (error2) {
@@ -88,13 +93,15 @@ export default function APIDetailsPage() {
   }
   const configData = data2?.data || [];
   // console.log('configData', configData);
-
   if (isLoading3) {
-    return <Text>Loading...</Text>;
+    return (
+      <DetailsPageLayout pageTitle="API Details" endpointLabel endpoint={apiEndpoint}>
+        <Skeleton mah={636} mt={27} height={250} radius="xl" maw={1024} ml={30} />
+      </DetailsPageLayout>
+    );
   }
-
   if (error3) {
-    return <Text>Error loading data2</Text>;
+    return <Text>is loading data</Text>;
   }
   const issuTicketsData = data3?.data || [];
   // console.log('issueTicketsData', issuTicketsData);
