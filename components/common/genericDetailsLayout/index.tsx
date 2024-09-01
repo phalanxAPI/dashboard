@@ -17,7 +17,7 @@ export function DetailsPageLayout({
   children: any;
   pageTitle: string;
   endpointLabel: boolean;
-  endpoint: string;
+  endpoint?: string;
 }) {
   const router = useRouter();
 

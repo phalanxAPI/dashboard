@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
 import { Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
@@ -29,8 +29,9 @@ import { Issue } from '@/arsenal/types/issue';
 
 export default function APIDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
-  const pathname = usePathname();
-  const endpointId = pathname.split('/').pop();
+
+  const params = useParams();
+  const endpointId = params.endpoint as string;
 
   const { data, error, isLoading } = useSWR<AxiosResponse<Record<string, any>>>(
     () => [`${BASE_URL}/api-info/${endpointId}`, 'get'],
@@ -41,6 +42,7 @@ export default function APIDetailsPage() {
     data: data2,
     error: error2,
     isLoading: isLoading2,
+    mutate,
   } = useSWR<AxiosResponse<SecurityConfiguration[]>>(
     () => [`${BASE_URL}/config/${endpointId}`, 'get'],
     genericAPIFetcher
@@ -124,7 +126,7 @@ export default function APIDetailsPage() {
         <TciketsDataTable issueTicketsData={issuTicketsData} />
       ) : (
         <>
-          <SuccessFlow configData={configData} />
+          <SuccessFlow configData={configData} apiId={endpointId} mutateConfig={mutate} />
           <BrokenObjectLevelAuthorization configData={configData} />
           <BrokenAuthentication configData={configData} />
           <BrokenObjectPropertyLevelAuthorization configData={configData} />
