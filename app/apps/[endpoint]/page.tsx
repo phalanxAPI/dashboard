@@ -2,9 +2,11 @@
 
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
+import useSWRMutation from 'swr/mutation';
+
 import { useState } from 'react';
 import { Button, Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
-import { usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
 import AppInfo from '@/components/apps/appDetails/appInfo';
 import AnalyticsChart from '@/components/apps/appDetails/analyticsChart';
@@ -12,14 +14,15 @@ import BaseURL from '@/components/apps/appDetails/rulesConfigs/baseURL';
 import AuthTokens from '@/components/apps/appDetails/rulesConfigs/authToken';
 import UserData from '@/components/apps/appDetails/rulesConfigs/userData';
 import { BASE_URL } from '@/utils/constants';
-import { genericAPIFetcher } from '@/utils/swr.helper';
+import { genericAPIFetcher, genericMutationFetcher } from '@/utils/swr.helper';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
 export default function AppDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
-  const pathname = usePathname();
-  const endpointId = pathname.split('/').pop() ?? '';
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const params = useParams();
+  const endpointId = params.endpoint as string;
+
+  // const [isButtonLoading, setIsButtonLoading] = useState(false);
   const { data, error, isLoading } = useSWR<AxiosResponse<Record<string, any>>>(
     () => [`${BASE_URL}/applications/${endpointId}`, 'get'],
     genericAPIFetcher
@@ -30,6 +33,10 @@ export default function AppDetailsPage() {
     genericAPIFetcher
   );
 
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/scans`,
+    genericMutationFetcher
+  );
   if (isLoading) {
     return (
       <Flex direction="column">
@@ -47,23 +54,22 @@ export default function AppDetailsPage() {
   const configData = data2?.data || [];
 
   const handleTestAppClick = async () => {
-    setIsButtonLoading(true);
-
-    const { error: scanError } = useSWR<AxiosResponse<any, any>>(
-      () => [
-        `${BASE_URL}/scans`,
-        'post',
-
-        {
-          params: {
-            appId: endpointId,
+    try {
+      const TestAppdata = await trigger({
+        type: 'post',
+        rest: [
+          {
+            params: {
+              appId: endpointId,
+            },
           },
-        },
-      ],
-      genericAPIFetcher
-    );
-    console.log('Chiragserror', scanError);
-    setIsButtonLoading(false);
+        ],
+      } as any);
+
+      console.log(TestAppdata);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

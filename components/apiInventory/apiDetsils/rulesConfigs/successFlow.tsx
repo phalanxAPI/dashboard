@@ -1,50 +1,90 @@
 /* eslint-disable react/jsx-curly-brace-presence */
+
 import { Button, Flex, Group, Select, Text } from '@mantine/core';
+
 import { CodeHighlight } from '@mantine/code-highlight';
 import { useEffect, useState } from 'react';
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
+import { BASE_URL } from '@/utils/constants';
+import { genericMutationFetcher } from '@/utils/swr.helper';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
-// const RequestHeadersCode = `
-// {
-//   "Authorization": "Bearer {{admin.token}}"
-// }
-// `;
-// const RequestParamsCode = `
-// {
-//   "id": "{{admin.id}}"
-// }
-// `;
-
-export default function SuccessFlow({ configData }: { configData: SecurityConfiguration[] }) {
-  const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+export default function SuccessFlow({
+  configData,
+  apiId,
+  mutateConfig,
+}: {
+  configData: SecurityConfiguration[];
+  apiId: string;
+  mutateConfig: () => Promise<any>;
+}) {
+  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
   const [value, setValue] = useState<string | null>('');
+  const [requestHeadersCode, setRequestHeadersCode] = useState<string>('');
+  const [requestParamsCode, setRequestParamsCode] = useState<string>('');
+  const [requestBodyCode, setRequestBodyCode] = useState<string>('');
 
   useEffect(() => {
     const successFlowData = configData.find((config) => config.configType === 'SUCCESS_FLOW');
-    setFilteredData(successFlowData || null);
+
     setValue(successFlowData?.rules?.expectations.code?.toString());
-    console.log('CODE', successFlowData?.rules?.expectations.code.toString());
-    // setValue('200');
+    setRequestHeadersCode(JSON.stringify(successFlowData?.rules?.headers, null, 2) || '{}');
+    setRequestParamsCode(JSON.stringify(successFlowData?.rules?.params, null, 2) || '{}');
+    setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
   }, [JSON.stringify(configData)]);
 
   // if (!filteredData) {
   //   return <Text>No Success Flow Configuration Found</Text>;
   // }
 
-  const RequestHeadersCode =
-    JSON.stringify(filteredData?.rules?.headers, null, 2) ||
-    `
-    {}
-  `;
-  const RequestParamsCode =
-    JSON.stringify(filteredData?.rules?.params, null, 2) ||
-    `
-    {}
-  `;
-  const RequestBodyCode =
-    JSON.stringify(filteredData?.rules?.body, null, 2) ||
-    `{}
-`;
+  //   const RequestHeadersCode =
+  //     JSON.stringify(filteredData?.rules?.headers, null, 2) ||
+  //     `
+  //     {}
+  //   `;
+  //   const RequestParamsCode =
+  //     JSON.stringify(filteredData?.rules?.params, null, 2) ||
+  //     `
+  //     {}
+  //   `;
+  //   const RequestBodyCode =
+  //     JSON.stringify(filteredData?.rules?.body, null, 2) ||
+  //     `{}
+  // `;
+
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/config/app/${apiId}`,
+    genericMutationFetcher
+  );
+
+  const handleSave = async () => {
+    const data = await trigger({
+      type: 'put',
+      rest: [
+        {
+          rules: {
+            expectations: {
+              code: parseInt(value || '200', 10),
+            },
+            headers: JSON.parse(requestHeadersCode),
+            params: JSON.parse(requestParamsCode),
+            body: JSON.parse(requestBodyCode),
+          },
+          isEnabled: true,
+        },
+        {
+          params: {
+            configType: 'SUCCESS_FLOW',
+          },
+        },
+      ],
+    } as any);
+
+    await mutateConfig();
+
+    console.log(data);
+  };
   return (
     <Flex
       // mah={738}
@@ -79,7 +119,8 @@ export default function SuccessFlow({ configData }: { configData: SecurityConfig
             alignItems: 'center',
           }}
           withCopyButton={false}
-          code={RequestHeadersCode}
+          code={requestHeadersCode}
+          onChange={(e) => setRequestHeadersCode((e.target as HTMLDivElement).innerText)}
           language="tsx"
           contentEditable
         />
@@ -101,9 +142,13 @@ export default function SuccessFlow({ configData }: { configData: SecurityConfig
             alignItems: 'center',
           }}
           withCopyButton={false}
-          code={RequestParamsCode}
+          code={requestParamsCode}
           language="tsx"
           contentEditable
+          onInput={(e) => {
+            console.log((e.currentTarget as HTMLDivElement).textContent);
+            setRequestParamsCode((e.currentTarget as HTMLDivElement).textContent || '');
+          }}
         />
       </Flex>
       {/* Third  */}
@@ -122,8 +167,9 @@ export default function SuccessFlow({ configData }: { configData: SecurityConfig
             alignItems: 'center',
           }}
           withCopyButton={false}
-          code={RequestBodyCode}
+          code={requestBodyCode}
           language="tsx"
+          onChange={(e) => setRequestBodyCode((e.target as HTMLDivElement).innerText)}
           contentEditable
         />
       </Flex>
@@ -177,7 +223,14 @@ export default function SuccessFlow({ configData }: { configData: SecurityConfig
 
       <Flex direction="row" ml={24} align="center" mb={24}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button
+            fw={500}
+            size="sm"
+            bg="#246EFF"
+            onClick={handleSave}
+            loaderProps={{ type: 'dots' }}
+            loading={isButtonLoading}
+          >
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">

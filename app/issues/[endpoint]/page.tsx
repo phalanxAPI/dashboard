@@ -7,8 +7,7 @@ import { usePathname } from 'next/navigation';
 import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
-import ScanInfo from '@/components/scans/scanDetails/scanInfo';
-import ScanOutputSummary from '@/components/scans/scanDetails/outputSummary';
+
 import IssueInfo from '@/components/isseus/issuesDetails/issueInfo';
 import IssueDescription from '@/components/isseus/issuesDetails/issueDescription';
 
