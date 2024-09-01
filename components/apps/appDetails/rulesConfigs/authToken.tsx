@@ -2,16 +2,9 @@
 
 import { Button, Flex, Group, NumberInput, Select, Text } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
-const EndpointsCode = `
-https://testserver.com/internals/phalanx/tokens
-`;
-const RequestHeadersCode = `
-{
-  "Authorization": "Bearer {{SHARED_SECRET}}"
-}
-`;
 const OutputCode = `
 {
   "admin": "AUTH_TOKEN",
@@ -20,9 +13,57 @@ const OutputCode = `
 }
 `;
 
-export default function AuthTokens() {
-  const [interval, setInterval] = useState<string | null>('');
+function convertInterval(interval: number, unit: string): number {
+  switch (unit) {
+    case 'Seconds':
+      return interval;
+    case 'Minutes':
+      return interval / 60;
+    case 'Hours':
+      return interval / 3600;
+    default:
+      return interval;
+  }
+}
 
+function getUnitFromInterval(interval: number): string {
+  if (interval % 3600 === 0) return 'Hours';
+  if (interval % 60 === 0) return 'Minutes';
+  return 'Seconds';
+}
+
+export default function AuthTokens({ configData }: { configData: SecurityConfiguration[] }) {
+  const [interval, setInterval] = useState<string | number>('');
+  const [selectedUnit, setSelectedUnit] = useState<string>('Seconds');
+  const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+
+  useEffect(() => {
+    const successFlowData = configData.find((config) => config.configType === 'AUTH_TOKENS');
+    setFilteredData(successFlowData || null);
+
+    if (successFlowData?.rules?.refreshInterval) {
+      const unit = getUnitFromInterval(successFlowData.rules.refreshInterval);
+      const convertedInterval = convertInterval(successFlowData.rules.refreshInterval, unit);
+      setInterval(convertedInterval);
+      setSelectedUnit(unit);
+    }
+  }, [JSON.stringify(configData)]);
+
+  const RequestHeadersCode =
+    JSON.stringify(filteredData?.rules?.headers, null, 2) ||
+    `
+  {}
+`;
+  const EndpointsCode =
+    JSON.stringify(filteredData?.rules?.endpoint, null, 2) ||
+    `
+  {}
+    `;
+  const handleUnitChange = (value: string) => {
+    const convertedInterval = convertInterval(Number(interval), value);
+    setInterval(convertedInterval);
+    setSelectedUnit(value);
+  };
   return (
     <Flex
       mah={780}
@@ -73,12 +114,14 @@ export default function AuthTokens() {
             allowNegative={false}
             allowDecimal={false}
             // ml={23}
+            value={interval}
+            onChange={setInterval}
             maw={80}
           />
           <Select
             placeholder="Minutes"
-            value={interval}
-            onChange={setInterval}
+            value={selectedUnit}
+            onChange={handleUnitChange}
             ml={5}
             fw="500"
             size="sm"
@@ -100,7 +143,6 @@ export default function AuthTokens() {
           Request Headers
         </Text>
         <CodeHighlight
-          mah={110}
           w={950}
           mt={10}
           p={24}
@@ -131,11 +173,12 @@ export default function AuthTokens() {
             borderRadius: '16px',
             display: 'flex',
             alignItems: 'center',
+            opacity: '70%',
           }}
           withCopyButton={false}
           code={OutputCode}
           language="tsx"
-          contentEditable
+          contentEditable={false}
         />
       </Flex>
 

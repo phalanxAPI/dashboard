@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { monoFont } from '@/app/fonts';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
@@ -15,6 +15,17 @@ export default function UnrestrictedResourceConsumption({
 
   const [reqSizelimitvalue, setReqSizeLimitValue] = useState<string | null>('');
   const [reqSizeCodevalue, setReqSizeCodeValue] = useState<string | null>('');
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const successFlowData = configData.find(
+      (config) => config.configType === 'UNRESTRICTED_RESOURCE_CONSUMPTION'
+    );
+
+    setChecked(successFlowData?.isEnabled ?? false);
+    setReqSizeCodeValue(successFlowData?.rules?.expectations.sizeLimit?.toString());
+    setReqRateCodeValue(successFlowData?.rules?.expectations.rateLimit?.toString());
+  }, [JSON.stringify(configData)]);
 
   return (
     <Flex
@@ -36,7 +47,12 @@ export default function UnrestrictedResourceConsumption({
         <Text fw={500} size="sm" c="#6E6E6E">
           Enabled
         </Text>
-        <Switch defaultChecked ml={18} color="#246EFF" />
+        <Switch
+          checked={checked}
+          onChange={(event) => setChecked(event.currentTarget.checked)}
+          ml={18}
+          color="#246EFF"
+        />
       </Flex>
 
       {/* first  */}
@@ -83,11 +99,11 @@ export default function UnrestrictedResourceConsumption({
               />
             </Flex>
           </Flex>
-          <Flex direction="row" w={320} align="center" mt={8} justify="space-between">
+          <Flex direction="row" w={340} align="center" mt={8} justify="space-between">
             <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
               Error Code:
             </Text>
-            <Flex w={209}>
+            <Flex>
               <Select
                 placeholder="Pick Response Code"
                 value={reqSizeCodevalue}
@@ -96,11 +112,25 @@ export default function UnrestrictedResourceConsumption({
                 fw="500"
                 size="sm"
                 data={[
-                  '200 OK',
-                  '403 Forbidden',
-                  '401 Unauthorized',
-                  '413 Payload Too Large',
-                  '429 Too Many Requests',
+                  {
+                    label: '200 Success',
+                    value: '200',
+                  },
+
+                  { label: '204 No Content', value: '204' },
+                  { label: '301 Moved Permanently', value: '301' },
+                  { label: '302 Found', value: '302' },
+                  { label: '304 Not Modified', value: '304' },
+                  { label: '400 Bad Request', value: '400' },
+                  { label: '401 Unauthorized', value: '401' },
+                  { label: '403 Forbidden', value: '403' },
+                  { label: '404 Not Found', value: '404' },
+                  { label: '500 Internal Server Error', value: '500' },
+                  { label: '502 Bad Gateway', value: '502' },
+                  { label: '503 Service Unavailable', value: '503' },
+                  { label: '504 Gateway Timeout', value: '504' },
+                  { label: '413 Payload Too Large', value: '413' },
+                  { label: '429 Too Many Requests', value: '429' },
                 ]}
                 maw={209}
                 styles={() => ({
@@ -159,11 +189,11 @@ export default function UnrestrictedResourceConsumption({
               />
             </Flex>
           </Flex>
-          <Flex direction="row" w={320} align="center" mt={8} justify="space-between">
+          <Flex direction="row" w={340} align="center" mt={8} justify="space-between">
             <Text fw={400} size="sm" c="#495057" pb={11} className={monoFont.className}>
               Error Code:
             </Text>
-            <Flex maw={209}>
+            <Flex>
               <Select
                 placeholder="Pick Response Code"
                 value={reqRateCodevalue}
@@ -172,11 +202,25 @@ export default function UnrestrictedResourceConsumption({
                 fw="500"
                 size="sm"
                 data={[
-                  '200 OK',
-                  '403 Forbidden',
-                  '401 Unauthorized',
-                  '413 Payload Too Large',
-                  '429 Too Many Requests',
+                  {
+                    label: '200 Success',
+                    value: '200',
+                  },
+
+                  { label: '204 No Content', value: '204' },
+                  { label: '301 Moved Permanently', value: '301' },
+                  { label: '302 Found', value: '302' },
+                  { label: '304 Not Modified', value: '304' },
+                  { label: '400 Bad Request', value: '400' },
+                  { label: '401 Unauthorized', value: '401' },
+                  { label: '403 Forbidden', value: '403' },
+                  { label: '404 Not Found', value: '404' },
+                  { label: '500 Internal Server Error', value: '500' },
+                  { label: '502 Bad Gateway', value: '502' },
+                  { label: '503 Service Unavailable', value: '503' },
+                  { label: '504 Gateway Timeout', value: '504' },
+                  { label: '413 Payload Too Large', value: '413' },
+                  { label: '429 Too Many Requests', value: '429' },
                 ]}
                 maw={209}
                 styles={() => ({

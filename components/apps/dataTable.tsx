@@ -1,6 +1,6 @@
 import { Table, Pagination, Text, Flex, Skeleton } from '@mantine/core';
 import { useRouter } from 'next/navigation';
-import { IconExternalLink } from '@tabler/icons-react';
+
 import { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import useSWR from 'swr';
@@ -20,7 +20,7 @@ export function AppsDataTable() {
 
   const { data, error, isLoading } = useSWR<
     AxiosResponse<
-      PaginatedData<(Application & { serverCount: number; __v: number; _id: string })[]>
+      PaginatedData<(Application & { serverCount: number; hits: number; _id: string })[]>
     >
   >(
     () => [
@@ -61,16 +61,7 @@ export function AppsDataTable() {
             <Text>{element.name}</Text>
           </Table.Td>
           <Table.Td fw={400}>{element.serverCount}</Table.Td>
-          <Table.Td fw={500}>{element.__v}</Table.Td>
-          <Table.Td fw={500} style={{ textAlign: 'center' }}>
-            <IconExternalLink
-              style={{ cursor: 'pointer' }}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent triggering row click
-                window.location.href = `${element.baseUrl}`;
-              }}
-            />
-          </Table.Td>
+          <Table.Td fw={500}>{element.hits}</Table.Td>
         </Table.Tr>
       ))
     ) : (
@@ -105,7 +96,6 @@ export function AppsDataTable() {
             <Table.Th>Name</Table.Th>
             <Table.Th>Active Servers</Table.Th>
             <Table.Th>Hits</Table.Th>
-            <Table.Th>Configure</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>

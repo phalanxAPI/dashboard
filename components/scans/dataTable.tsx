@@ -2,6 +2,8 @@ import { Table, Pagination, Flex, Text, Skeleton } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { useState } from 'react';
 import useSWR from 'swr';
+import { useRouter } from 'next/navigation';
+
 import { AxiosResponse } from 'axios';
 import { PaginatedData } from '@/types/pagination';
 import { Scan } from '@/arsenal/types/scan';
@@ -10,9 +12,16 @@ import { genericAPIFetcher } from '@/utils/swr.helper';
 import { monoFont } from '@/app/fonts';
 
 export function ScansDataTable() {
+  const router = useRouter();
+
+  const handleRowClick = (endpoint: string) => {
+    router.push(`/scans/${endpoint}`);
+  };
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, error, isLoading } = useSWR<AxiosResponse<PaginatedData<Scan[]>>>(
+  const { data, error, isLoading } = useSWR<
+    AxiosResponse<PaginatedData<(Scan & { _id: string })[]>>
+  >(
     () => [
       `${BASE_URL}/scans`,
       'get',
@@ -39,18 +48,27 @@ export function ScansDataTable() {
 
   const rows =
     elements.length > 0 ? (
-      elements.map((element, index) => (
-        <Table.Tr key={index} className={monoFont.className} c="dimmed">
-          <Table.Td style={{ color: '#E55708' }}>{element.status}</Table.Td>
-          <Table.Td>{new Date(element.scanDate).toLocaleDateString()}</Table.Td>
-          <Table.Td fw={500}>
-            <IconExternalLink style={{ cursor: 'pointer' }} onClick={() => {}} />
-          </Table.Td>
-        </Table.Tr>
-      ))
+      elements.map((element, index) => {
+        const scanDate = new Date(element.scanDate);
+        const scanTime = scanDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Extract time
+
+        return (
+          <Table.Tr key={index} className={monoFont.className} c="dimmed">
+            <Table.Td style={{ color: '#E55708' }}>{element.status}</Table.Td>
+            <Table.Td>{scanDate.toLocaleDateString()}</Table.Td>
+            <Table.Td>{scanTime}</Table.Td>
+            <Table.Td>
+              <IconExternalLink
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleRowClick(element._id)}
+              />
+            </Table.Td>
+          </Table.Tr>
+        );
+      })
     ) : (
       <Table.Tr className={monoFont.className} c="dimmed">
-        <Table.Td colSpan={3} style={{ textAlign: 'center' }}>
+        <Table.Td colSpan={4} style={{ textAlign: 'center' }}>
           No Data Available
         </Table.Td>
       </Table.Tr>
@@ -74,6 +92,7 @@ export function ScansDataTable() {
           <Table.Tr style={{ color: '#495057' }}>
             <Table.Th>Status</Table.Th>
             <Table.Th>Scan Date</Table.Th>
+            <Table.Th>Time</Table.Th>
             <Table.Th>Endpoint</Table.Th>
           </Table.Tr>
         </Table.Thead>

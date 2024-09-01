@@ -36,6 +36,7 @@ export default function StatusOverview() {
   }
 
   const elements = data?.data;
+  console.log('DataIssue', elements);
   return (
     <Box
       pt="xl"

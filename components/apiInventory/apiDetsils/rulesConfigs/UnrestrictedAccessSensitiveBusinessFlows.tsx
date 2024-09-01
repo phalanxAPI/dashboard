@@ -91,7 +91,7 @@ export default function UnrestrictedAccessSensitiveBusinessFlows({
             <Flex w={209}>
               <Select
                 placeholder="Pick Response Code"
-                value={codevalue?.toString()}
+                value={codevalue}
                 onChange={setCodeValue}
                 ml={23}
                 fw="500"

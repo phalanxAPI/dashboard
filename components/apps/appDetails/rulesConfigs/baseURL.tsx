@@ -4,11 +4,9 @@ import { Button, Flex, Group, Text } from '@mantine/core';
 
 import { CodeHighlight } from '@mantine/code-highlight';
 
-const BaseUrlCode = `
-https://testserver.com
-`;
+export default function BaseURL({ baseUrl, appId }: { baseUrl: string; appId: string }) {
+  const BaseUrlCode = baseUrl || '{}';
 
-export default function BaseURL() {
   return (
     <Flex
       mah={590}
