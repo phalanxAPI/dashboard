@@ -85,7 +85,7 @@ export default function ApiStatusChart() {
   const graphData = elements[0]?.data
     .map((item) => ({
       name: item.time,
-      time: item.time,
+      time: new Date(item.time).toLocaleString(),
       ...elements.reduce(
         (acc, curr) => {
           acc[getServerName(curr.serverId)] =
