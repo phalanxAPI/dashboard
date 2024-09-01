@@ -4,6 +4,7 @@ import { AxiosResponse } from 'axios';
 import useSWR from 'swr';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
+import { useActiveApp } from '@/store/activeApp.store';
 
 // const mdata = [
 //   { month: 'January', Smartphones: 1200, Laptops: 900, Tablets: 200 },
@@ -15,13 +16,15 @@ import { genericAPIFetcher } from '@/utils/swr.helper';
 // ];
 
 export default function IssueDiscoveryChart() {
+  const { activeAppId } = useActiveApp();
+
   const { data, error, isLoading } = useSWR<AxiosResponse<{ data: Record<string, any>[] }>>(
     () => [
       `${BASE_URL}/issuegraph`,
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
         },
       },
     ],

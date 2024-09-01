@@ -6,8 +6,11 @@ import { AxiosResponse } from 'axios';
 import { monoFont, primaryFont } from '@/app/fonts';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
+import { useActiveApp } from '@/store/activeApp.store';
 
 export default function StatusOverview() {
+  const { activeAppId } = useActiveApp();
+
   const { data, error, isLoading } = useSWR<
     AxiosResponse<{
       openIssues: number;
@@ -20,7 +23,7 @@ export default function StatusOverview() {
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
         },
       },
     ],

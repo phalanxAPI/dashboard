@@ -6,11 +6,13 @@ import useSWR from 'swr';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 import { BASE_URL } from '@/utils/constants';
 import { toTitleCase } from '@/utils';
+import { useActiveApp } from '@/store/activeApp.store';
 
 const getServerName = (serverId: string) => toTitleCase(serverId.split('-').join(' '));
 
 export default function ApiStatusChart() {
   const theme = useMantineTheme();
+  const { activeAppId } = useActiveApp();
   const { colors } = theme;
   const colorsList = Object.entries(colors);
   const totalColors = colorsList.length;
@@ -62,7 +64,7 @@ export default function ApiStatusChart() {
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
         },
       },
     ],

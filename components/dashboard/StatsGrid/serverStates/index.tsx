@@ -5,15 +5,18 @@ import { Box, Flex, Grid, RingProgress, Skeleton, Text } from '@mantine/core';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 import { SystemInfo } from '@/arsenal/types/system-info';
+import { useActiveApp } from '@/store/activeApp.store';
 
 export default function ServerStates() {
+  const { activeAppId } = useActiveApp();
+
   const { data, error, isLoading } = useSWR<AxiosResponse<SystemInfo>>(
     () => [
       `${BASE_URL}/system-info`,
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
           serverId: '60d5ec49f8d2b341d8f8e8b8',
         },
       },

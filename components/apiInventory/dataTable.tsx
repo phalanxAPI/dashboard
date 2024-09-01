@@ -9,10 +9,12 @@ import { genericAPIFetcher } from '@/utils/swr.helper';
 import { BASE_URL } from '@/utils/constants';
 import { API } from '@/arsenal/types/api';
 import { PaginatedData } from '@/types/pagination';
+import { useActiveApp } from '@/store/activeApp.store';
 
 export function APIInventoryDataTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const router = useRouter();
+  const { activeAppId } = useActiveApp();
 
   const { data, error, isLoading } = useSWR<AxiosResponse<PaginatedData<API[]>>>(
     () => [
@@ -20,7 +22,7 @@ export function APIInventoryDataTable() {
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
           perPage: 10,
           page: currentPage,
         },

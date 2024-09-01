@@ -1,18 +1,20 @@
-import { Table, Pagination, Flex, Text, Skeleton } from '@mantine/core';
+import { Flex, Pagination, Skeleton, Table, Text } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useSWR from 'swr';
-import { useRouter } from 'next/navigation';
 
 import { AxiosResponse } from 'axios';
-import { PaginatedData } from '@/types/pagination';
+import { monoFont } from '@/app/fonts';
 import { Scan } from '@/arsenal/types/scan';
+import { useActiveApp } from '@/store/activeApp.store';
+import { PaginatedData } from '@/types/pagination';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
-import { monoFont } from '@/app/fonts';
 
 export function ScansDataTable() {
   const router = useRouter();
+  const { activeAppId } = useActiveApp();
 
   const handleRowClick = (endpoint: string) => {
     router.push(`/scans/${endpoint}`);
@@ -27,7 +29,7 @@ export function ScansDataTable() {
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
           perPage: 2,
           page: currentPage,
         },

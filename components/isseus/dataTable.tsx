@@ -10,9 +10,11 @@ import { BASE_URL } from '@/utils/constants';
 import { PaginatedData } from '@/types/pagination';
 import { Issue } from '@/arsenal/types/issue';
 import { genericAPIFetcher } from '@/utils/swr.helper';
+import { useActiveApp } from '@/store/activeApp.store';
 
 export function IssuesDataTable() {
   const router = useRouter();
+  const { activeAppId } = useActiveApp();
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -27,7 +29,7 @@ export function IssuesDataTable() {
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
           perPage: 10,
           page: currentPage,
         },

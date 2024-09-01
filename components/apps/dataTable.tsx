@@ -9,9 +9,12 @@ import { PaginatedData } from '@/types/pagination';
 import { Application } from '@/arsenal/types/application';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 import { monoFont } from '@/app/fonts';
+import { useActiveApp } from '@/store/activeApp.store';
 
 export function AppsDataTable() {
   const router = useRouter();
+  const { activeAppId } = useActiveApp();
+
   const handleRowClick = (endpoint: string) => {
     router.push(`/apps/${endpoint}`);
   };
@@ -28,7 +31,7 @@ export function AppsDataTable() {
       'get',
       {
         params: {
-          appId: '66cdff10e4453dc3b625b1c3',
+          appId: activeAppId,
           perPage: 10,
           page: currentPage,
         },
