@@ -3,7 +3,7 @@
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
 import { useState } from 'react';
-import { Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
+import { Button, Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
 import { usePathname } from 'next/navigation';
 import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
 import AppInfo from '@/components/apps/appDetails/appInfo';
@@ -19,7 +19,7 @@ export default function AppDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
   const pathname = usePathname();
   const endpointId = pathname.split('/').pop() ?? '';
-
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const { data, error, isLoading } = useSWR<AxiosResponse<Record<string, any>>>(
     () => [`${BASE_URL}/applications/${endpointId}`, 'get'],
     genericAPIFetcher
@@ -46,19 +46,51 @@ export default function AppDetailsPage() {
   const appInfoData = data?.data || {};
   const configData = data2?.data || [];
 
+  const handleTestAppClick = async () => {
+    setIsButtonLoading(true);
+
+    const { error: scanError } = useSWR<AxiosResponse<any, any>>(
+      () => [
+        `${BASE_URL}/scans`,
+        'post',
+
+        {
+          params: {
+            appId: endpointId,
+          },
+        },
+      ],
+      genericAPIFetcher
+    );
+    console.log('Chiragserror', scanError);
+    setIsButtonLoading(false);
+  };
+
   return (
     <DetailsPageLayout pageTitle="App Details" endpointLabel={false}>
       <AppInfo data={appInfoData} />
-      <SegmentedControl
-        value={selectedValue}
-        onChange={setSelectedValue}
-        data={['Rules Config', 'Analytics']}
-        color="#1E1E1E"
-        bg="white"
-        fw={400}
-        mt={5}
-        style={{ fontSize: '14px', borderRadius: '49px' }}
-      />
+
+      <Flex direction="row" align="center" justify="space-between" maw={1000}>
+        <SegmentedControl
+          value={selectedValue}
+          onChange={setSelectedValue}
+          data={['Rules Config', 'Analytics']}
+          color="#1E1E1E"
+          bg="white"
+          fw={400}
+          mt={5}
+          style={{ fontSize: '14px', borderRadius: '49px' }}
+        />
+        <Button
+          loading={isButtonLoading}
+          loaderProps={{ type: 'dots' }}
+          variant="gradient"
+          onClick={handleTestAppClick}
+          gradient={{ from: 'violet', to: 'indigo', deg: 90 }}
+        >
+          Test App
+        </Button>
+      </Flex>
       {selectedValue === 'Analytics' ? (
         <AnalyticsChart />
       ) : (
