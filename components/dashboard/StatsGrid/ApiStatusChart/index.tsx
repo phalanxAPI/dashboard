@@ -17,7 +17,7 @@ export default function ApiStatusChart() {
   const colorsList = Object.entries(colors);
   const totalColors = colorsList.length;
 
-  const [value, setValue] = useState('system-info/cpu-usage');
+  const [value, setValue] = useState('api-info-graph?requestType=INCOMING');
 
   const options = [
     { value: 'api-info-graph?requestType=INCOMING', label: 'Incoming Requests' },
