@@ -10,23 +10,63 @@ export default function UnrestrictedResourceConsumption({
 }: {
   configData: SecurityConfiguration[];
 }) {
-  const [reqRateLimitvalue, setReqRateLimitValue] = useState<string | null>('');
+  const [reqRateLimitvalue, setReqRateLimitValue] = useState<string | number>('');
   const [reqRateCodevalue, setReqRateCodeValue] = useState<string | null>('');
 
   const [reqSizelimitvalue, setReqSizeLimitValue] = useState<string | null>('');
   const [reqSizeCodevalue, setReqSizeCodeValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
-
+  const [reqSizeUnit, setReqSizeUnit] = useState<string>('KB');
+  const [rateWindow, setRateWindow] = useState<number>(0);
+  const [rateUnit, setRateUnit] = useState<string>('Seconds');
   useEffect(() => {
     const successFlowData = configData.find(
       (config) => config.configType === 'UNRESTRICTED_RESOURCE_CONSUMPTION'
     );
 
     setChecked(successFlowData?.isEnabled ?? false);
+
+    const initialRateWindow = successFlowData?.rules?.limits?.rateWindow;
+    setReqRateLimitValue(successFlowData?.rules?.limits?.rate);
+    setRateWindow(initialRateWindow);
+
+    if (successFlowData?.rules?.limits?.payload) {
+      const payloadSize = successFlowData.rules.limits.payload; // In bytes
+      if (payloadSize >= 1024 * 1024) {
+        setReqSizeLimitValue((payloadSize / (1024 * 1024)).toFixed(2)); // Convert to MB
+        setReqSizeUnit('MB');
+      } else {
+        setReqSizeLimitValue((payloadSize / 1024).toFixed(2)); // Convert to KB
+        setReqSizeUnit('KB');
+      }
+    }
+
+    if (initialRateWindow >= 3600) {
+      setRateUnit('Hours');
+      setRateWindow(initialRateWindow / 3600);
+    } else if (initialRateWindow >= 60) {
+      setRateUnit('Minutes');
+      setRateWindow(initialRateWindow / 60);
+    } else {
+      setRateUnit('Seconds');
+      setRateWindow(initialRateWindow);
+    }
     setReqSizeCodeValue(successFlowData?.rules?.expectations.sizeLimit?.toString());
     setReqRateCodeValue(successFlowData?.rules?.expectations.rateLimit?.toString());
   }, [JSON.stringify(configData)]);
 
+  const handleRateUnitChange = (unit: string) => {
+    let newRateWindow = rateWindow;
+    if (unit === 'Hours') {
+      newRateWindow = rateWindow / 3600;
+    } else if (unit === 'Minutes') {
+      newRateWindow = rateWindow / 60;
+    } else if (unit === 'Seconds') {
+      newRateWindow = rateWindow * (rateUnit === 'Minutes' ? 60 : rateUnit === 'Hours' ? 3600 : 1);
+    }
+    setRateUnit(unit);
+    setRateWindow(newRateWindow);
+  };
   return (
     <Flex
       mb={45}
@@ -78,12 +118,14 @@ export default function UnrestrictedResourceConsumption({
                 placeholder="20"
                 allowNegative={false}
                 allowDecimal={false}
+                value={parseFloat(reqSizelimitvalue || '0')}
+                onChange={(value) => setReqSizeLimitValue(value?.toString() || '')}
                 ml={23}
               />
               <Select
                 placeholder="MB"
-                value={reqSizelimitvalue}
-                onChange={setReqSizeLimitValue}
+                value={reqSizeUnit}
+                onChange={setReqSizeUnit}
                 ml={5}
                 fw="500"
                 size="sm"
@@ -168,13 +210,15 @@ export default function UnrestrictedResourceConsumption({
                 placeholder="150"
                 allowNegative={false}
                 allowDecimal={false}
+                value={reqRateLimitvalue}
+                onChange={(value) => setReqRateLimitValue(value || 0)}
                 ml={23}
                 maw={65}
               />
               <Select
                 placeholder="Minutes"
-                value={reqRateLimitvalue}
-                onChange={setReqRateLimitValue}
+                value={rateUnit}
+                onChange={(value) => handleRateUnitChange(value!)}
                 ml={5}
                 fw="500"
                 size="sm"
