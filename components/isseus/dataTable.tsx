@@ -1,6 +1,8 @@
 import useSWR from 'swr';
 import { AxiosResponse } from 'axios';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { Table, Pagination, Badge, Skeleton, Text, Flex } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { monoFont } from '@/app/fonts';
@@ -10,9 +12,16 @@ import { Issue } from '@/arsenal/types/issue';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 
 export function IssuesDataTable() {
+  const router = useRouter();
+
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, error, isLoading } = useSWR<AxiosResponse<PaginatedData<Issue[]>>>(
+  const handleRowClick = (endpoint: string) => {
+    router.push(`/issues/${endpoint}`);
+  };
+  const { data, error, isLoading } = useSWR<
+    AxiosResponse<PaginatedData<(Issue & { _id: string })[]>>
+  >(
     () => [
       `${BASE_URL}/issue`,
       'get',
@@ -63,7 +72,10 @@ export function IssuesDataTable() {
             <Table.Td style={{ color: '#E55708' }}>{element.status}</Table.Td>
             <Table.Td>{new Date(element.raisedAt).toLocaleDateString()}</Table.Td>
             <Table.Td fw={500}>
-              <IconExternalLink style={{ cursor: 'pointer' }} />
+              <IconExternalLink
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleRowClick(element._id)}
+              />
             </Table.Td>
           </Table.Tr>
         );

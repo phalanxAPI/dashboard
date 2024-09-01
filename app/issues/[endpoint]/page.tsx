@@ -9,13 +9,15 @@ import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
 import ScanInfo from '@/components/scans/scanDetails/scanInfo';
 import ScanOutputSummary from '@/components/scans/scanDetails/outputSummary';
+import IssueInfo from '@/components/isseus/issuesDetails/issueInfo';
+import IssueDescription from '@/components/isseus/issuesDetails/issueDescription';
 
-export default function ScanDetailsPage() {
+export default function IssueDetailsPage() {
   const pathname = usePathname();
   const endpointId = pathname.split('/').pop();
 
   const { data, error, isLoading } = useSWR<AxiosResponse<Record<string, any>>>(
-    () => [`${BASE_URL}/scans/${endpointId}`, 'get'],
+    () => [`${BASE_URL}/issue/${endpointId}`, 'get'],
     genericAPIFetcher
   );
 
@@ -32,12 +34,13 @@ export default function ScanDetailsPage() {
     return <Text>Error loading data</Text>;
   }
 
-  const scanInfoData = data?.data || {};
-  console.log('scanino', scanInfoData);
+  const issueInfoData = data?.data || {};
+  console.log('scanino', issueInfoData);
   return (
-    <DetailsPageLayout pageTitle="Scan Details" endpointLabel={false}>
-      <ScanInfo data={scanInfoData} />
-      <ScanOutputSummary data={scanInfoData} />
+    <DetailsPageLayout pageTitle="Issue Details" endpointLabel={false}>
+      <IssueInfo data={issueInfoData} />
+      {/* <ScanOutputSummary data={scanInfoData} /> */}
+      <IssueDescription data={issueInfoData} />
     </DetailsPageLayout>
   );
 }
