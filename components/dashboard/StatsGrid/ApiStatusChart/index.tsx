@@ -1,24 +1,32 @@
-import { Box, Skeleton, Text } from '@mantine/core';
-import { useState } from 'react';
-import useSWR from 'swr';
-import { AxiosResponse } from 'axios';
-
-import { AreaChart } from '@mantine/charts';
-import { APIStatusSelector } from '../apiStatusSelector';
+import { toTitleCase } from '@/utils';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
+import { AreaChart } from '@mantine/charts';
+import { Box, Select, Skeleton, Text, useMantineTheme } from '@mantine/core';
+import { AxiosResponse } from 'axios';
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const getServerName = (serverId: string) => {
+  return toTitleCase(serverId.split('-').join(' '));
+};
 
 export default function ApiStatusChart() {
+  const theme = useMantineTheme();
+  const { colors } = theme;
+  const colorsList = Object.entries(colors);
+  const totalColors = colorsList.length;
+
   const [value, setValue] = useState('system-info/cpu-usage');
 
   const options = [
+    { value: 'api-info-graph?requestType=INCOMING', label: 'Incoming Requests' },
+    { value: 'api-info-graph?requestType=OUTGOING', label: 'Outgoing Requests' },
     { value: 'system-info/cpu-usage', label: 'Cpu Usage' },
     { value: 'system-info/memory-usage', label: 'Memory Usage' },
     { value: 'system-info/disk-io?READ', label: 'Disk IO' },
     { value: 'system-info/disk-io?WRITE', label: 'Disk IO' },
     { value: 'system-info/network-stats', label: 'Network Stats' },
-    { value: 'api-info-graph?requestType=INCOMING', label: 'Incoming Requests' },
-    { value: 'api-info-graph?requestType=OUTGOING', label: 'Outgoing Requests' },
   ];
 
   const graphDatakey = {
@@ -44,8 +52,11 @@ export default function ApiStatusChart() {
   const { data, error, isLoading } = useSWR<
     AxiosResponse<
       {
-        time: Date;
-      } & Record<string, number>
+        serverId: string;
+        data: {
+          time: Date;
+        } & Record<string, number>[];
+      }[]
     >
   >(
     () => [
@@ -69,11 +80,27 @@ export default function ApiStatusChart() {
   }
 
   const elements = data?.data || [];
-  console.log(elements);
+
+  // use 20 data points from the and  the graph skipping 10 data points
+  const graphData = elements[0]?.data
+    .map((item) => ({
+      name: item.time,
+      time: item.time,
+      ...elements.reduce(
+        (acc, curr) => {
+          acc[getServerName(curr.serverId)] =
+            (curr.data.find((d) => d.time === item.time) as any)?.[graphDatakey[value]] || 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    }))
+    .slice(-30, -10);
+
   return (
     <Box
       style={{
-        height: '350px',
+        height: 350,
         backgroundColor: 'white',
         borderRadius: '40px',
         display: 'flex',
@@ -86,28 +113,40 @@ export default function ApiStatusChart() {
       <Box
         style={{
           position: 'absolute',
-          top: '23px',
-          left: '25px',
+          top: 23,
+          left: 25,
         }}
       >
-        <APIStatusSelector value={value} setValue={setValue} data={options} />
+        <Select
+          placeholder="API Requests"
+          value={value}
+          onChange={(val) => val && setValue(val)}
+          defaultValue="API Requests"
+          data={options}
+          maw={180}
+          mah={32}
+          variant="filled"
+        />
       </Box>
       <AreaChart
-        data={biaxialData}
+        data={graphData}
         h={270}
-        dataKey="name"
+        dataKey="time"
         withXAxis={false}
         withYAxis={false}
         withLegend
         legendProps={{
           verticalAlign: 'top',
         }}
-        series={[
-          { name: 'server1', color: '#F03E3E' },
-          { name: 'server2', color: '#4263EB', yAxisId: 'right' },
-          { name: 'server3', color: '#4DE589', yAxisId: 'right' },
-        ]}
+        series={elements?.map((item, index) => ({
+          name: getServerName(item.serverId),
+          color: colorsList[(index * 2 + 3) % totalColors][1][5] || '#000',
+        }))}
         gridColor="transparent"
+        curveType="bump"
+        withDots={false}
+        tooltipAnimationDuration={200}
+        tooltipProps={{}}
       />
     </Box>
   );
