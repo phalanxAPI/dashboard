@@ -54,7 +54,7 @@ export default function ServerStates() {
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: 46, color: '#0066FF' }]}
+              sections={[{ value: elements?.cpuLoad, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
                   {elements?.cpuLoad}%
@@ -73,7 +73,7 @@ export default function ServerStates() {
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: 74, color: '#0066FF' }]}
+              sections={[{ value: elements?.memUsage.usagePercent, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
                   {elements?.memUsage.usagePercent}%
@@ -112,7 +112,7 @@ export default function ServerStates() {
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: 98, color: '#0066FF' }]}
+              sections={[{ value: elements?.battery.percent, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
                   {elements?.battery.percent}%
