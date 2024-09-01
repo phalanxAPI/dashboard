@@ -1,7 +1,7 @@
 .navbar {
   /* background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-6)); */
   /* height: rem(800px); */
-  width: rem(300px);
+  width: rem(280px);
   padding: var(--mantine-spacing-md);
   padding-bottom: 0;
   padding-top: 39;
@@ -19,12 +19,14 @@
   /* color: light-dark(var(--mantine-color-black), var(--mantine-color-white)); */
   border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
+
 .headerText {
   color: #2b3e61;
   font-size: 20px;
   font-weight: 700;
   /* line-height: 29.62; */
 }
+
 .links {
   flex: 1;
   margin-left: calc(var(--mantine-spacing-md) * -1);
