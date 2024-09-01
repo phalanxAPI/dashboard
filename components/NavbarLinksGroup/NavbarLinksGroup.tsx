@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { Button, rem } from '@mantine/core';
 import Link from 'next/link';
-import { Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, rem } from '@mantine/core';
-import { IconChevronRight } from '@tabler/icons-react';
+import { usePathname } from 'next/navigation';
 import classes from './NavbarLinksGroup.module.css';
 
 interface LinksGroupProps {
@@ -13,57 +12,33 @@ interface LinksGroupProps {
   links?: { label: string; link: string }[];
 }
 
-export function LinksGroup({ icon: Icon, label, link, initiallyOpened, links }: LinksGroupProps) {
-  const hasLinks = Array.isArray(links);
-  // const [opened, setOpened] = useState(initiallyOpened || false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const [opened, setOpened] = useState(initiallyOpened || false);
-  const items = (hasLinks ? links : []).map((subLink) => (
-    <Text<'a'> component="a" className={classes.link}>
-      {subLink.label}
-    </Text>
-  ));
+export function LinksGroup({ icon: Icon, label, link }: LinksGroupProps) {
+  const pathname = usePathname();
+  const isActive = pathname === link;
 
   return (
     <>
-      <Link href={link} passHref className={classes.navbarLinks}>
-        <UnstyledButton className={classes.control} onClick={() => setOpened((o) => !o)}>
-          <Group justify="space-between" gap={0}>
-            <Box
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                color: isHovered ? '#246EFF' : '#646464',
-              }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <ThemeIcon
-                variant="light"
-                size={30}
-                style={{ color: isHovered ? '#246EFF' : '#646464' }}
-              >
-                <Icon className={classes.icon} style={{ width: rem(18), height: rem(18) }} />
-              </ThemeIcon>
-              <Box ml="md">{label}</Box>
-            </Box>
-            {hasLinks && (
-              <IconChevronRight
-                className={classes.chevron}
-                stroke={1.5}
-                style={{
-                  width: rem(16),
-                  height: rem(16),
-                  transform: opened ? 'rotate(-90deg)' : 'none',
-                }}
-              />
-            )}
-          </Group>
-        </UnstyledButton>
-      </Link>
-
-      {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
+      <Button
+        leftSection={<Icon className={classes.icon} style={{ width: rem(18), height: rem(18) }} />}
+        variant={isActive ? 'light' : 'subtle'}
+        color={isActive ? 'blue' : 'gray'}
+        style={{
+          justifyContent: 'flex-start',
+        }}
+        py={12}
+        h="fit-content"
+        styles={{
+          inner: {
+            justifyContent: 'flex-start',
+          },
+        }}
+        size="md"
+        fullWidth
+        component={Link}
+        href={link}
+      >
+        {label}
+      </Button>
     </>
   );
 }

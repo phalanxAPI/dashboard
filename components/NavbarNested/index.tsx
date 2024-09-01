@@ -1,6 +1,6 @@
 'use client';
 
-import { Group } from '@mantine/core';
+import { Flex, Group } from '@mantine/core';
 import {
   IconBug,
   IconLayoutDashboard,
@@ -56,7 +56,14 @@ export function NavbarNested() {
         </Group>
       </div>
 
-      <div className={classes.linksInner}>{links}</div>
+      <Flex
+        // className={classes.linksInner}
+        direction="column"
+        gap={10}
+        mt={40}
+      >
+        {links}
+      </Flex>
     </nav>
   );
 }

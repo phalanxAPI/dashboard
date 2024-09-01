@@ -8,7 +8,7 @@ import { BASE_URL } from '@/utils/constants';
 import { toTitleCase } from '@/utils';
 import { useActiveApp } from '@/store/activeApp.store';
 
-const getServerName = (serverId: string) => toTitleCase(serverId.split('-').join(' '));
+const getServerName = (serverId: string) => toTitleCase(serverId?.split('-').join(' '));
 
 export default function ApiStatusChart() {
   const theme = useMantineTheme();
