@@ -1,15 +1,13 @@
-import { toTitleCase } from '@/utils';
-import { BASE_URL } from '@/utils/constants';
-import { genericAPIFetcher } from '@/utils/swr.helper';
 import { AreaChart } from '@mantine/charts';
-import { Box, Select, Skeleton, Text, useMantineTheme } from '@mantine/core';
+import { Box, Flex, Select, Skeleton, Text, Title, useMantineTheme } from '@mantine/core';
 import { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import useSWR from 'swr';
+import { genericAPIFetcher } from '@/utils/swr.helper';
+import { BASE_URL } from '@/utils/constants';
+import { toTitleCase } from '@/utils';
 
-const getServerName = (serverId: string) => {
-  return toTitleCase(serverId.split('-').join(' '));
-};
+const getServerName = (serverId: string) => toTitleCase(serverId.split('-').join(' '));
 
 export default function ApiStatusChart() {
   const theme = useMantineTheme();
@@ -128,13 +126,44 @@ export default function ApiStatusChart() {
           variant="filled"
         />
       </Box>
+
+      <Flex
+        style={{
+          position: 'absolute',
+          top: 23,
+          right: 25,
+        }}
+        direction="column"
+        gap={8}
+      >
+        <Title order={3} size="sm">
+          Servers:
+        </Title>
+        <Flex direction="column" align="flex-start" gap={6} miw={120}>
+          {elements?.map((item, index) => (
+            <Flex key={index} ml={1} align="center" gap={8}>
+              <Box
+                style={{
+                  width: 10,
+                  height: 10,
+                  backgroundColor: colorsList[(index * 2 + 3) % totalColors][1][5] || '#000',
+                  borderRadius: '50%',
+                }}
+              />
+              <Text size="xs" c="dimmed">
+                {getServerName(item.serverId)}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
+      </Flex>
       <AreaChart
         data={graphData}
         h={270}
         dataKey="time"
         withXAxis={false}
         withYAxis={false}
-        withLegend
+        // withLegend
         legendProps={{
           verticalAlign: 'top',
         }}
