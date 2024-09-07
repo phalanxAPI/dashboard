@@ -1,40 +1,84 @@
 /* eslint-disable react/jsx-curly-brace-presence */
-import { Button, Flex, Group, Select, Switch, Text } from '@mantine/core';
-
-import { CodeHighlight } from '@mantine/code-highlight';
+import { Button, Flex, Group, Select, Switch, Text, Textarea } from '@mantine/core';
 import { useEffect, useState } from 'react';
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
+import { BASE_URL } from '@/utils/constants';
+import { genericMutationFetcher } from '@/utils/swr.helper';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
 export default function BrokenFunctionLevelAuthorization({
   configData,
+  apiId,
+  mutateConfig,
 }: {
   configData: SecurityConfiguration[];
+  apiId: string;
+  mutateConfig: () => Promise<any>;
 }) {
   const [value, setValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
-  const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
 
+  const [requestHeadersCode, setRequestHeadersCode] = useState<string>('');
+  const [requestParamsCode, setRequestParamsCode] = useState<string>('');
+  const [requestBodyCode, setRequestBodyCode] = useState<string>('');
   useEffect(() => {
     const successFlowData = configData.find(
       (config) => config.configType === 'BROKEN_FUNCTION_LEVEL_AUTHORIZATION'
     );
-    setFilteredData(successFlowData || null);
+
     setValue(successFlowData?.rules?.expectations.code?.toString());
     setChecked(successFlowData?.isEnabled ?? false);
+    setRequestHeadersCode(JSON.stringify(successFlowData?.rules?.headers, null, 2) || '{}');
+    setRequestParamsCode(JSON.stringify(successFlowData?.rules?.params, null, 2) || '{}');
+    setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
   }, [JSON.stringify(configData)]);
 
-  const RequestHeadersCode =
-    JSON.stringify(filteredData?.rules?.headers, null, 2) ||
-    `{}
-`;
-  const RequestParamsCode =
-    JSON.stringify(filteredData?.rules?.params, null, 2) ||
-    `{}
-`;
-  const RequestBodyCode =
-    JSON.stringify(filteredData?.rules?.body, null, 2) ||
-    `{}
-`;
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/config/${apiId}`,
+    genericMutationFetcher
+  );
+
+  const handleSave = async () => {
+    const data = await trigger({
+      type: 'put',
+      rest: [
+        {
+          rules: {
+            expectations: {
+              code: parseInt(value || '200', 10),
+            },
+            headers: JSON.parse(requestHeadersCode),
+            params: JSON.parse(requestParamsCode),
+            body: JSON.parse(requestBodyCode),
+          },
+          isEnabled: checked,
+        },
+        {
+          params: {
+            configType: 'BROKEN_FUNCTION_LEVEL_AUTHORIZATION',
+          },
+        },
+      ],
+    } as any);
+
+    await mutateConfig();
+
+    console.log(data);
+  };
+
+  //   const RequestHeadersCode =
+  //     JSON.stringify(filteredData?.rules?.headers, null, 2) ||
+  //     `{}
+  // `;
+  //   const RequestParamsCode =
+  //     JSON.stringify(filteredData?.rules?.params, null, 2) ||
+  //     `{}
+  // `;
+  //   const RequestBodyCode =
+  //     JSON.stringify(filteredData?.rules?.body, null, 2) ||
+  //     `{}
+  // `;
   return (
     <Flex
       mb={45}
@@ -64,11 +108,21 @@ export default function BrokenFunctionLevelAuthorization({
       </Flex>
 
       {/* first  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Headers
         </Text>
-        <CodeHighlight
+        <Textarea
+          variant="filled"
+          w={1000}
+          p={24}
+          autosize
+          placeholder="Input placeholder"
+          value={requestHeadersCode}
+          onChange={(event) => setRequestHeadersCode(event.currentTarget.value)}
+          opacity="70%"
+        />
+        {/* <CodeHighlight
           w={950}
           mt={10}
           p={24}
@@ -82,14 +136,24 @@ export default function BrokenFunctionLevelAuthorization({
           code={RequestHeadersCode}
           language="tsx"
           contentEditable
-        />
+        /> */}
       </Flex>
       {/* Second  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Params
         </Text>
-        <CodeHighlight
+        <Textarea
+          variant="filled"
+          w={1000}
+          p={24}
+          autosize
+          placeholder="Input placeholder"
+          value={requestParamsCode}
+          onChange={(event) => setRequestParamsCode(event.currentTarget.value)}
+          opacity="70%"
+        />
+        {/* <CodeHighlight
           w={950}
           mt={10}
           p={24}
@@ -103,14 +167,24 @@ export default function BrokenFunctionLevelAuthorization({
           code={RequestParamsCode}
           language="tsx"
           contentEditable
-        />
+        /> */}
       </Flex>
       {/* third  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Body
         </Text>
-        <CodeHighlight
+        <Textarea
+          variant="filled"
+          w={1000}
+          p={24}
+          autosize
+          placeholder="Input placeholder"
+          value={requestBodyCode}
+          onChange={(event) => setRequestBodyCode(event.currentTarget.value)}
+          opacity="70%"
+        />
+        {/* <CodeHighlight
           w={950}
           mt={10}
           p={24}
@@ -124,7 +198,7 @@ export default function BrokenFunctionLevelAuthorization({
           code={RequestBodyCode}
           language="tsx"
           contentEditable
-        />
+        /> */}
       </Flex>
       {/* status code */}
       <Flex direction="row" ml={24} align="center" mb={25} mt={25}>
@@ -174,7 +248,7 @@ export default function BrokenFunctionLevelAuthorization({
 
       <Flex direction="row" ml={24} align="center" mb={24}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button fw={500} size="sm" bg="#246EFF" loading={isButtonLoading} onClick={handleSave}>
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">

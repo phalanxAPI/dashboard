@@ -1,14 +1,22 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
 import { monoFont } from '@/app/fonts';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
+import { BASE_URL } from '@/utils/constants';
+import { genericMutationFetcher } from '@/utils/swr.helper';
+
 export default function UnrestrictedAccessSensitiveBusinessFlows({
   configData,
+  apiId,
+  mutateConfig,
 }: {
   configData: SecurityConfiguration[];
+  apiId: string;
+  mutateConfig: () => Promise<any>;
 }) {
   const [codevalue, setCodeValue] = useState<string | null>('');
   const [limitvalue, setLimitValue] = useState<string | number>('');
@@ -25,6 +33,37 @@ export default function UnrestrictedAccessSensitiveBusinessFlows({
     setChecked(successFlowData?.isEnabled ?? false);
   }, [JSON.stringify(configData)]);
 
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/config/${apiId}`,
+    genericMutationFetcher
+  );
+
+  const handleSave = async () => {
+    const data = await trigger({
+      type: 'put',
+      rest: [
+        {
+          rules: {
+            limit: limitvalue,
+
+            expectations: {
+              code: codevalue,
+            },
+          },
+          isEnabled: checked,
+        },
+        {
+          params: {
+            configType: 'UNRESTRICTED_ACCESS_TO_SENSITIVE_BUSINESS_FLOW',
+          },
+        },
+      ],
+    } as any);
+
+    await mutateConfig();
+
+    console.log(data);
+  };
   return (
     <Flex
       mah={590}
@@ -135,7 +174,7 @@ export default function UnrestrictedAccessSensitiveBusinessFlows({
 
       <Flex direction="row" ml={24} align="center" mb={24} mt={25}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button fw={500} size="sm" bg="#246EFF" loading={isButtonLoading} onClick={handleSave}>
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">

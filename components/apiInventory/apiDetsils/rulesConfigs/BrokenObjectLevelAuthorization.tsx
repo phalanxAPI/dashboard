@@ -30,7 +30,7 @@ export default function BrokenObjectLevelAuthorization({
   apiId: string;
   mutateConfig: () => Promise<any>;
 }) {
-  const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
   const [value, setValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
   const [requestHeadersCode, setRequestHeadersCode] = useState<string>('');
@@ -43,7 +43,7 @@ export default function BrokenObjectLevelAuthorization({
     setRequestHeadersCode(JSON.stringify(successFlowData?.rules?.headers, null, 2) || '{}');
     setRequestParamsCode(JSON.stringify(successFlowData?.rules?.params, null, 2) || '{}');
     setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
-    setFilteredData(successFlowData || null);
+    // setFilteredData(successFlowData || null);
     setValue(successFlowData?.rules?.expectations.code?.toString());
     setChecked(successFlowData?.isEnabled ?? false);
   }, [JSON.stringify(configData)]);

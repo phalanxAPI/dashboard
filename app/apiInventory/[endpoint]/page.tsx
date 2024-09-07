@@ -132,14 +132,39 @@ export default function APIDetailsPage() {
             apiId={endpointId}
             mutateConfig={mutate}
           />
-          <BrokenAuthentication configData={configData} />
-          <BrokenObjectPropertyLevelAuthorization configData={configData} />
-          <BrokenFunctionLevelAuthorization configData={configData} />
-          <UnrestrictedResourceConsumption configData={configData} />
-          <UnrestrictedAccessSensitiveBusinessFlows configData={configData} />
-          <ServerSideRequestForgery configData={configData} />
-          <SecurityMisconfiguration configData={configData} />
-          <UnsafeConsumptionAPIs />
+          <BrokenAuthentication configData={configData} apiId={endpointId} mutateConfig={mutate} />
+          <BrokenObjectPropertyLevelAuthorization
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <BrokenFunctionLevelAuthorization
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <UnrestrictedResourceConsumption
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <UnrestrictedAccessSensitiveBusinessFlows
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <ServerSideRequestForgery
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <SecurityMisconfiguration
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+
+          <UnsafeConsumptionAPIs configData={configData} apiId={endpointId} mutateConfig={mutate} />
         </>
       )}
     </DetailsPageLayout>

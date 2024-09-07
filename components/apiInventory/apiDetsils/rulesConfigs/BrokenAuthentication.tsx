@@ -1,12 +1,20 @@
 import { useEffect, useState } from 'react';
 /* eslint-disable react/jsx-curly-brace-presence */
 import { Button, Flex, Group, Select, Switch, Text } from '@mantine/core';
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
+import { genericMutationFetcher } from '@/utils/swr.helper';
+import { BASE_URL } from '@/utils/constants';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
 export default function BrokenAuthentication({
   configData,
+  apiId,
+  mutateConfig,
 }: {
   configData: SecurityConfiguration[];
+  apiId: string;
+  mutateConfig: () => Promise<any>;
 }) {
   const [value, setValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
@@ -20,6 +28,34 @@ export default function BrokenAuthentication({
     setChecked(successFlowData?.isEnabled ?? false);
   }, [JSON.stringify(configData)]);
 
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/config/${apiId}`,
+    genericMutationFetcher
+  );
+  const handleSave = async () => {
+    const data = await trigger({
+      type: 'put',
+      rest: [
+        {
+          rules: {
+            expectations: {
+              code: parseInt(value || '200', 10),
+            },
+          },
+          isEnabled: checked,
+        },
+        {
+          params: {
+            configType: 'BROKEN_AUTHENTICATION',
+          },
+        },
+      ],
+    } as any);
+
+    await mutateConfig();
+
+    console.log(data);
+  };
   return (
     <Flex
       mah={590}
@@ -97,7 +133,7 @@ export default function BrokenAuthentication({
 
       <Flex direction="row" ml={24} align="center" mb={24}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button fw={500} size="sm" bg="#246EFF" loading={isButtonLoading} onClick={handleSave}>
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">
