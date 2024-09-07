@@ -1,9 +1,14 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 
-import { Button, Flex, Group, NumberInput, Select, Text } from '@mantine/core';
+import { Button, Flex, Group, NumberInput, Select, Text, Textarea } from '@mantine/core';
 import { CodeHighlight } from '@mantine/code-highlight';
 import { useEffect, useState } from 'react';
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
+
+import { BASE_URL } from '@/utils/constants';
+import { genericMutationFetcher } from '@/utils/swr.helper';
 
 const OutputCode = `
 {
@@ -32,14 +37,29 @@ function getUnitFromInterval(interval: number): string {
   return 'Seconds';
 }
 
-export default function AuthTokens({ configData }: { configData: SecurityConfiguration[] }) {
+export default function AuthTokens({
+  configData,
+  appId,
+  mutateConfig,
+}: {
+  configData: SecurityConfiguration[];
+  appId: string;
+  mutateConfig: () => Promise<any>;
+}) {
   const [interval, setInterval] = useState<string | number>('');
   const [selectedUnit, setSelectedUnit] = useState<string>('Seconds');
-  const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
+  const [endpoints, setEndpoints] = useState<string>('');
+  const [reqHeaderCode, setReqHeaderCode] = useState<string>('');
 
   useEffect(() => {
     const successFlowData = configData.find((config) => config.configType === 'AUTH_TOKENS');
-    setFilteredData(successFlowData || null);
+    // setFilteredData(successFlowData || null);
+    if (successFlowData) {
+      setEndpoints(JSON.stringify(successFlowData?.rules?.endpoint, null, 2));
+
+      setReqHeaderCode(JSON.stringify(successFlowData?.rules?.headers, null, 2));
+    }
 
     if (successFlowData?.rules?.refreshInterval) {
       const unit = getUnitFromInterval(successFlowData.rules.refreshInterval);
@@ -49,20 +69,58 @@ export default function AuthTokens({ configData }: { configData: SecurityConfigu
     }
   }, [JSON.stringify(configData)]);
 
-  const RequestHeadersCode =
-    JSON.stringify(filteredData?.rules?.headers, null, 2) ||
-    `
-  {}
-`;
-  const EndpointsCode =
-    JSON.stringify(filteredData?.rules?.endpoint, null, 2) ||
-    `
-  {}
-    `;
-  const handleUnitChange = (value: string) => {
-    const convertedInterval = convertInterval(Number(interval), value);
-    setInterval(convertedInterval);
-    setSelectedUnit(value);
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/config/app/${appId}`,
+    genericMutationFetcher
+  );
+
+  const handleSaveAuthTokenClick = async () => {
+    let refreshIntervalInSeconds;
+    switch (selectedUnit) {
+      case 'Hours':
+        refreshIntervalInSeconds = Number(interval) * 3600;
+        break;
+      case 'Minutes':
+        refreshIntervalInSeconds = Number(interval) * 60;
+        break;
+      default:
+        refreshIntervalInSeconds = Number(interval);
+    }
+
+    try {
+      const saveAuthTokendata = await trigger({
+        type: 'put',
+        rest: [
+          {
+            rules: {
+              refreshInterval: refreshIntervalInSeconds,
+              headers: JSON.parse(reqHeaderCode),
+              endpoint: JSON.parse(endpoints),
+            },
+            isEnabled: true,
+          },
+          {
+            params: {
+              configType: 'AUTH_TOKENS',
+            },
+          },
+        ],
+      } as any);
+
+      // console.log('baseutl', editedBaseUrl);
+      console.log(saveAuthTokendata);
+      await mutateConfig();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleUnitChange = (value: string | null) => {
+    if (value !== null) {
+      const convertedInterval = convertInterval(Number(interval), value);
+      setInterval(convertedInterval);
+      setSelectedUnit(value);
+    }
   };
   return (
     <Flex
@@ -81,11 +139,21 @@ export default function AuthTokens({ configData }: { configData: SecurityConfigu
       </Text>
 
       {/* first  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25} justify="flex-start">
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Endpoints
         </Text>
-        <CodeHighlight
+
+        <Textarea
+          variant="filled"
+          p={24}
+          w={1000}
+          placeholder="Input placeholder"
+          value={endpoints}
+          onChange={(event) => setEndpoints(event.currentTarget.value)}
+          opacity="70%"
+        />
+        {/* <CodeHighlight
           mah={110}
           w={950}
           mt={10}
@@ -100,7 +168,7 @@ export default function AuthTokens({ configData }: { configData: SecurityConfigu
           code={EndpointsCode}
           language="tsx"
           contentEditable
-        />
+        /> */}
       </Flex>
       {/* second  */}
       <Flex direction="column" align="flex-start" ml={24} mt={25}>
@@ -138,11 +206,21 @@ export default function AuthTokens({ configData }: { configData: SecurityConfigu
       </Flex>
 
       {/* third  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Headers
         </Text>
-        <CodeHighlight
+        <Textarea
+          variant="filled"
+          p={24}
+          w={1000}
+          autosize
+          placeholder="Input placeholder"
+          value={reqHeaderCode}
+          onChange={(event) => setReqHeaderCode(event.currentTarget.value)}
+          opacity="70%"
+        />
+        {/* <CodeHighlight
           w={950}
           mt={10}
           p={24}
@@ -156,7 +234,7 @@ export default function AuthTokens({ configData }: { configData: SecurityConfigu
           code={RequestHeadersCode}
           language="tsx"
           contentEditable
-        />
+        /> */}
       </Flex>
       {/* fourth  */}
       <Flex direction="column" align="flex-start" ml={24} mt={25}>
@@ -186,7 +264,13 @@ export default function AuthTokens({ configData }: { configData: SecurityConfigu
 
       <Flex direction="row" ml={24} align="center" mb={24} mt={24}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button
+            fw={500}
+            size="sm"
+            bg="#246EFF"
+            onClick={handleSaveAuthTokenClick}
+            loading={isButtonLoading}
+          >
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">

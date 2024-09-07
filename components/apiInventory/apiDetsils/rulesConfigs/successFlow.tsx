@@ -146,7 +146,7 @@ export default function SuccessFlow({
           language="tsx"
           contentEditable
           onInput={(e) => {
-            console.log((e.currentTarget as HTMLDivElement).textContent);
+            // console.log((e.currentTarget as HTMLDivElement).textContent);
             setRequestParamsCode((e.currentTarget as HTMLDivElement).textContent || '');
           }}
         />

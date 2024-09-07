@@ -1,11 +1,49 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 
-import { Button, Flex, Group, Text } from '@mantine/core';
+import { Button, Flex, Group, Text, Textarea } from '@mantine/core';
 
-import { CodeHighlight } from '@mantine/code-highlight';
+// import { CodeHighlight } from '@mantine/code-highlight';
+import { useState } from 'react';
 
-export default function BaseURL({ baseUrl, appId }: { baseUrl: string; appId: string }) {
-  const BaseUrlCode = baseUrl || '{}';
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
+import { genericMutationFetcher } from '@/utils/swr.helper';
+import { BASE_URL } from '@/utils/constants';
+
+export default function BaseURL({
+  baseUrl,
+  appId,
+  mutateConfig,
+}: {
+  baseUrl: string;
+  appId: string;
+  mutateConfig: () => Promise<any>;
+}) {
+  const [editedBaseUrl, setEditedBaseUrl] = useState(baseUrl || '{}');
+
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/applications/${appId}/baseUrl`,
+    genericMutationFetcher
+  );
+
+  const handleSaveBaseUrlClick = async () => {
+    try {
+      const saveAppdata = await trigger({
+        type: 'put',
+        rest: [
+          {
+            baseUrl: editedBaseUrl,
+          },
+        ],
+      } as any);
+
+      console.log('baseutl', editedBaseUrl);
+      console.log(saveAppdata);
+      await mutateConfig();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <Flex
@@ -24,7 +62,7 @@ export default function BaseURL({ baseUrl, appId }: { baseUrl: string; appId: st
         Base URL
       </Text>
       {/* first  */}
-      <CodeHighlight
+      {/* <CodeHighlight
         mah={110}
         w={950}
         mt={10}
@@ -38,14 +76,30 @@ export default function BaseURL({ baseUrl, appId }: { baseUrl: string; appId: st
           alignItems: 'center',
         }}
         withCopyButton={false}
-        code={BaseUrlCode}
+        code={editedBaseUrl}
+        onInput={(e) => setEditedBaseUrl(e.currentTarget.textContent || '')}
         language="tsx"
         contentEditable
+      /> */}
+
+      <Textarea
+        variant="filled"
+        p={24}
+        placeholder="Input placeholder"
+        value={editedBaseUrl}
+        onChange={(event) => setEditedBaseUrl(event.currentTarget.value)}
+        opacity="70%"
       />
       {/* Button */}
       <Flex direction="row" ml={24} align="center" mb={24}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button
+            fw={500}
+            size="sm"
+            bg="#246EFF"
+            onClick={handleSaveBaseUrlClick}
+            loading={isButtonLoading}
+          >
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">
