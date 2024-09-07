@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 
-import { Button, Flex, Group, Select, Text } from '@mantine/core';
+import { Button, Flex, Group, Select, Text, Textarea } from '@mantine/core';
 
-import { CodeHighlight } from '@mantine/code-highlight';
 import { useEffect, useState } from 'react';
 import useSWRMutation from 'swr/mutation';
 import { AxiosResponse } from 'axios';
@@ -34,27 +33,8 @@ export default function SuccessFlow({
     setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
   }, [JSON.stringify(configData)]);
 
-  // if (!filteredData) {
-  //   return <Text>No Success Flow Configuration Found</Text>;
-  // }
-
-  //   const RequestHeadersCode =
-  //     JSON.stringify(filteredData?.rules?.headers, null, 2) ||
-  //     `
-  //     {}
-  //   `;
-  //   const RequestParamsCode =
-  //     JSON.stringify(filteredData?.rules?.params, null, 2) ||
-  //     `
-  //     {}
-  //   `;
-  //   const RequestBodyCode =
-  //     JSON.stringify(filteredData?.rules?.body, null, 2) ||
-  //     `{}
-  // `;
-
   const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
-    `${BASE_URL}/config/app/${apiId}`,
+    `${BASE_URL}/config/${apiId}`,
     genericMutationFetcher
   );
 
@@ -103,74 +83,52 @@ export default function SuccessFlow({
       </Text>
 
       {/* first  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Headers
         </Text>
-
-        <CodeHighlight
-          w={950}
-          mt={10}
+        <Textarea
+          variant="filled"
+          w={1000}
           p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={requestHeadersCode}
-          onChange={(e) => setRequestHeadersCode((e.target as HTMLDivElement).innerText)}
-          language="tsx"
-          contentEditable
+          autosize
+          placeholder="Input placeholder"
+          value={requestHeadersCode}
+          onChange={(event) => setRequestHeadersCode(event.currentTarget.value)}
+          opacity="70%"
         />
       </Flex>
 
       {/* Second  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Params
         </Text>
-        <CodeHighlight
-          w={950}
-          mt={10}
+        <Textarea
+          variant="filled"
+          w={1000}
           p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={requestParamsCode}
-          language="tsx"
-          contentEditable
-          onInput={(e) => {
-            // console.log((e.currentTarget as HTMLDivElement).textContent);
-            setRequestParamsCode((e.currentTarget as HTMLDivElement).textContent || '');
-          }}
+          autosize
+          placeholder="Input placeholder"
+          value={requestParamsCode}
+          onChange={(event) => setRequestParamsCode(event.currentTarget.value)}
+          opacity="70%"
         />
       </Flex>
       {/* Third  */}
-      <Flex direction="column" align="flex-start" ml={24} mt={25} mb={25}>
-        <Text fw={500} size="sm" c="#6E6E6E">
+      <Flex direction="column" align="flex-start" mt={25} mb={25}>
+        <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
           Request Body
         </Text>
-        <CodeHighlight
-          w={950}
-          mt={10}
+        <Textarea
+          variant="filled"
+          w={1000}
           p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={requestBodyCode}
-          language="tsx"
-          onChange={(e) => setRequestBodyCode((e.target as HTMLDivElement).innerText)}
-          contentEditable
+          autosize
+          placeholder="Input placeholder"
+          value={requestBodyCode}
+          onChange={(event) => setRequestBodyCode(event.currentTarget.value)}
+          opacity="70%"
         />
       </Flex>
       {/* status code */}

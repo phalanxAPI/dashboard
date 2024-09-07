@@ -127,7 +127,11 @@ export default function APIDetailsPage() {
       ) : (
         <>
           <SuccessFlow configData={configData} apiId={endpointId} mutateConfig={mutate} />
-          <BrokenObjectLevelAuthorization configData={configData} />
+          <BrokenObjectLevelAuthorization
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
           <BrokenAuthentication configData={configData} />
           <BrokenObjectPropertyLevelAuthorization configData={configData} />
           <BrokenFunctionLevelAuthorization configData={configData} />
