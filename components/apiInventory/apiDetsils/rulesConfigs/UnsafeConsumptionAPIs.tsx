@@ -49,6 +49,7 @@ export default function UnsafeConsumptionAPIs({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
   return (

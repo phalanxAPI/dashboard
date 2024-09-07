@@ -123,6 +123,7 @@ export default function UnrestrictedResourceConsumption({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
   return (

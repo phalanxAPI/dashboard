@@ -16,15 +16,12 @@ export default function SecurityMisconfiguration({
   apiId: string;
   mutateConfig: () => Promise<any>;
 }) {
-  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
-
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const successFlowData = configData.find(
       (config) => config.configType === 'SECURITY_MISCONFIGURATION'
     );
-    // setFilteredData(successFlowData || null);
 
     setChecked(successFlowData?.isEnabled ?? false);
   }, [JSON.stringify(configData)]);
@@ -51,6 +48,7 @@ export default function SecurityMisconfiguration({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
   return (

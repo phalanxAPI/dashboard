@@ -62,6 +62,7 @@ export default function UnrestrictedAccessSensitiveBusinessFlows({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
   return (

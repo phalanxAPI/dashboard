@@ -17,7 +17,6 @@ export default function ServerSideRequestForgery({
   apiId: string;
   mutateConfig: () => Promise<any>;
 }) {
-  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
   const [value, setValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
 
@@ -28,7 +27,7 @@ export default function ServerSideRequestForgery({
     const successFlowData = configData.find(
       (config) => config.configType === 'SERVER_SIDE_REQUEST_FORGERY'
     );
-    // setFilteredData(successFlowData || null);
+
     setRequestHeadersCode(JSON.stringify(successFlowData?.rules?.headers, null, 2) || '{}');
     setRequestParamsCode(JSON.stringify(successFlowData?.rules?.params, null, 2) || '{}');
     setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
@@ -37,17 +36,6 @@ export default function ServerSideRequestForgery({
   }, [JSON.stringify(configData)]);
 
   // const RequestHeadersCode =
-  //   JSON.stringify(filteredData?.rules?.headers, null, 2) ||
-  //   `{}
-  // `;
-  // const RequestParamsCode =
-  //   JSON.stringify(filteredData?.rules?.params, null, 2) ||
-  //   `{}
-  // `;
-  // const RequestBodyCode =
-  //   JSON.stringify(filteredData?.rules?.body, null, 2) ||
-  //   `{}
-  // `;
 
   const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
     `${BASE_URL}/config/${apiId}`,
@@ -79,6 +67,7 @@ export default function ServerSideRequestForgery({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 
@@ -125,21 +114,6 @@ export default function ServerSideRequestForgery({
           onChange={(event) => setRequestHeadersCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestHeadersCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
 
       {/* Second  */}
@@ -157,21 +131,6 @@ export default function ServerSideRequestForgery({
           onChange={(event) => setRequestParamsCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestParamsCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
       <Flex direction="column" align="flex-start" mt={25}>
         <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
@@ -187,21 +146,6 @@ export default function ServerSideRequestForgery({
           onChange={(event) => setRequestBodyCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestBodyCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
 
       {/* status code */}

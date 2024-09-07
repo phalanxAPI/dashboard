@@ -10,17 +10,6 @@ import { BASE_URL } from '@/utils/constants';
 import { genericMutationFetcher } from '@/utils/swr.helper';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
-// const RequestHeadersCode = `
-// {
-//   "Authorization": "Bearer {{bob.token}}"
-// }
-// `;
-// const RequestParamsCode = `
-// {
-//   "id": "object_x_alice"
-// }
-// `;
-
 export default function BrokenObjectLevelAuthorization({
   configData,
   apiId,
@@ -30,7 +19,6 @@ export default function BrokenObjectLevelAuthorization({
   apiId: string;
   mutateConfig: () => Promise<any>;
 }) {
-  // const [filteredData, setFilteredData] = useState<SecurityConfiguration | null>(null);
   const [value, setValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
   const [requestHeadersCode, setRequestHeadersCode] = useState<string>('');
@@ -43,7 +31,7 @@ export default function BrokenObjectLevelAuthorization({
     setRequestHeadersCode(JSON.stringify(successFlowData?.rules?.headers, null, 2) || '{}');
     setRequestParamsCode(JSON.stringify(successFlowData?.rules?.params, null, 2) || '{}');
     setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
-    // setFilteredData(successFlowData || null);
+
     setValue(successFlowData?.rules?.expectations.code?.toString());
     setChecked(successFlowData?.isEnabled ?? false);
   }, [JSON.stringify(configData)]);
@@ -78,6 +66,7 @@ export default function BrokenObjectLevelAuthorization({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
 
@@ -125,21 +114,6 @@ export default function BrokenObjectLevelAuthorization({
           onChange={(event) => setRequestHeadersCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestHeadersCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
 
       {/* Second  */}
@@ -157,21 +131,6 @@ export default function BrokenObjectLevelAuthorization({
           onChange={(event) => setRequestParamsCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestParamsCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
       <Flex direction="column" align="flex-start" mt={25}>
         <Text fw={500} size="sm" c="#6E6E6E" ml={24}>
@@ -187,21 +146,6 @@ export default function BrokenObjectLevelAuthorization({
           onChange={(event) => setRequestBodyCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestBodyCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
       {/* status code */}
       <Flex direction="row" ml={24} align="center" mb={25} mt={25}>

@@ -32,14 +32,7 @@ export default function BrokenObjectPropertyLevelAuthorization({
     setRequestBodyCode(JSON.stringify(successFlowData?.rules?.body, null, 2) || '{}');
     setValue(successFlowData?.rules?.expectations.code?.toString());
     setChecked(successFlowData?.isEnabled ?? false);
-
-    console.log('CODE', successFlowData?.rules?.expectations.code.toString());
-    // setValue('200');
   }, [JSON.stringify(configData)]);
-
-  // if (!filteredData) {
-  //   return <Text>No Success Flow Configuration Found</Text>;
-  // }
 
   const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
     `${BASE_URL}/config/${apiId}`,
@@ -71,23 +64,9 @@ export default function BrokenObjectPropertyLevelAuthorization({
 
     await mutateConfig();
 
+    // eslint-disable-next-line no-console
     console.log(data);
   };
-
-  //   const RequestHeadersCode =
-  //     JSON.stringify(filteredData?.rules?.headers, null, 2) ||
-  //     `
-  //     {}
-  //   `;
-  //   const RequestParamsCode =
-  //     JSON.stringify(filteredData?.rules?.params, null, 2) ||
-  //     `
-  //     {}
-  //   `;
-  //   const RequestBodyCode =
-  //     JSON.stringify(filteredData?.rules?.body, null, 2) ||
-  //     `{}
-  // `;
 
   return (
     <Flex
@@ -132,22 +111,6 @@ export default function BrokenObjectPropertyLevelAuthorization({
           onChange={(event) => setRequestHeadersCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          h={110}
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestHeadersCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
       {/* Second  */}
       <Flex direction="column" align="flex-start" mt={25}>
@@ -164,21 +127,6 @@ export default function BrokenObjectPropertyLevelAuthorization({
           onChange={(event) => setRequestParamsCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestParamsCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
       {/* third  */}
       <Flex direction="column" align="flex-start" mt={25}>
@@ -195,21 +143,6 @@ export default function BrokenObjectPropertyLevelAuthorization({
           onChange={(event) => setRequestBodyCode(event.currentTarget.value)}
           opacity="70%"
         />
-        {/* <CodeHighlight
-          w={950}
-          mt={10}
-          p={24}
-          bg="#F4F4F4"
-          style={{
-            borderRadius: '16px',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-          withCopyButton={false}
-          code={RequestBodyCode}
-          language="tsx"
-          contentEditable
-        /> */}
       </Flex>
 
       {/* status code */}
