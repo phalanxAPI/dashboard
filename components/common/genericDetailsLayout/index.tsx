@@ -30,7 +30,7 @@ export function DetailsPageLayout({
       <div className={classes.maincont}>
         <div className={classes.container}>
           <div className={classes.textcont}>
-            <Box onClick={handleBackClick} style={{ cursor: 'pointer' }}>
+            <Box onClick={handleBackClick} style={{ cursor: 'pointer' }} h={32}>
               <IconChevronLeft size={32} color="#001133" />
             </Box>
             <Text className={classes.gridtext} pl={8}>

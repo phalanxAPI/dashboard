@@ -8,7 +8,7 @@ export function PageLayout({ children, pageTitle }: { children: any; pageTitle: 
       <Flex direction="column" pl="xl" pt={36} gap={10} mt={8}>
         <Flex justify="space-between">
           <Flex direction="column">
-            <Title fz={28}>{pageTitle}</Title>
+            <Title c="#3c3c3c" fz={28}>{pageTitle}</Title>
           </Flex>
           <Flex direction="row" gap={16} align="center" mr="xl">
             <Alerts />
