@@ -24,6 +24,7 @@ export function DetailsPageLayout({
   const handleBackClick = () => {
     router.back();
   };
+
   return (
     <>
       <div className={classes.maincont}>
