@@ -26,6 +26,7 @@ export function LinksGroup({ icon: Icon, label, link }: LinksGroupProps) {
           justifyContent: 'flex-start',
         }}
         py={12}
+        radius="xl"
         h="fit-content"
         styles={{
           inner: {
