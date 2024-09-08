@@ -23,12 +23,12 @@ export default function AppDetailsPage() {
   const endpointId = params.endpoint as string;
 
   // const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const { data, error, isLoading } = useSWR<AxiosResponse<Record<string, any>>>(
+  const { data, error, isLoading, mutate } = useSWR<AxiosResponse<Record<string, any>>>(
     () => [`${BASE_URL}/applications/${endpointId}`, 'get'],
     genericAPIFetcher
   );
 
-  const { data: data2 } = useSWR<AxiosResponse<SecurityConfiguration[]>>(
+  const { data: data2, mutate: mutateConfig } = useSWR<AxiosResponse<SecurityConfiguration[]>>(
     () => [`${BASE_URL}/config/app/${endpointId}`, 'get'],
     genericAPIFetcher
   );
@@ -101,9 +101,9 @@ export default function AppDetailsPage() {
         <AnalyticsChart />
       ) : (
         <>
-          <BaseURL baseUrl={appInfoData.baseUrl} appId={endpointId} />
-          <AuthTokens configData={configData} />
-          <UserData configData={configData} />
+          <BaseURL baseUrl={appInfoData.baseUrl} appId={endpointId} mutateConfig={mutate} />
+          <AuthTokens configData={configData} appId={endpointId} mutateConfig={mutateConfig} />
+          <UserData configData={configData} appId={endpointId} mutateConfig={mutateConfig} />
         </>
       )}
     </DetailsPageLayout>

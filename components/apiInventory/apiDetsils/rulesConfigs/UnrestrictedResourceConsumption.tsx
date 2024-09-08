@@ -1,14 +1,22 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import { Button, Flex, Group, NumberInput, Select, Switch, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
-
+import useSWRMutation from 'swr/mutation';
+import { AxiosResponse } from 'axios';
 import { monoFont } from '@/app/fonts';
 import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
+import { BASE_URL } from '@/utils/constants';
+import { genericMutationFetcher } from '@/utils/swr.helper';
+
 export default function UnrestrictedResourceConsumption({
   configData,
+  apiId,
+  mutateConfig,
 }: {
   configData: SecurityConfiguration[];
+  apiId: string;
+  mutateConfig: () => Promise<any>;
 }) {
   const [reqRateLimitvalue, setReqRateLimitValue] = useState<string | number>('');
   const [reqRateCodevalue, setReqRateCodeValue] = useState<string | null>('');
@@ -16,9 +24,9 @@ export default function UnrestrictedResourceConsumption({
   const [reqSizelimitvalue, setReqSizeLimitValue] = useState<string | null>('');
   const [reqSizeCodevalue, setReqSizeCodeValue] = useState<string | null>('');
   const [checked, setChecked] = useState(false);
-  const [reqSizeUnit, setReqSizeUnit] = useState<string>('KB');
+  const [reqSizeUnit, setReqSizeUnit] = useState<string | null>('KB');
   const [rateWindow, setRateWindow] = useState<number>(0);
-  const [rateUnit, setRateUnit] = useState<string>('Seconds');
+  const [rateUnit, setRateUnit] = useState<string | null>('Seconds');
   useEffect(() => {
     const successFlowData = configData.find(
       (config) => config.configType === 'UNRESTRICTED_RESOURCE_CONSUMPTION'
@@ -66,6 +74,57 @@ export default function UnrestrictedResourceConsumption({
     }
     setRateUnit(unit);
     setRateWindow(newRateWindow);
+  };
+
+  const { trigger, isMutating: isButtonLoading } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/config/${apiId}`,
+    genericMutationFetcher
+  );
+
+  const handleSave = async () => {
+    let requestSizeInBytes = 0;
+    if (reqSizeUnit === 'MB') {
+      requestSizeInBytes = parseFloat(reqSizelimitvalue || '0') * 1024 * 1024;
+    } else {
+      requestSizeInBytes = parseFloat(reqSizelimitvalue || '0') * 1024;
+    }
+
+    // Convert rate window to seconds based on the selected rate unit
+    let rateWindowInSeconds = rateWindow;
+    if (rateUnit === 'Minutes') {
+      rateWindowInSeconds = rateWindow * 60;
+    } else if (rateUnit === 'Hours') {
+      rateWindowInSeconds = rateWindow * 3600;
+    }
+    const data = await trigger({
+      type: 'put',
+      rest: [
+        {
+          rules: {
+            limits: {
+              payload: requestSizeInBytes,
+              rate: reqRateLimitvalue,
+              rateWindow: rateWindowInSeconds,
+            },
+            expectations: {
+              rateLimit: reqRateCodevalue,
+              sizeLimit: reqSizeCodevalue,
+            },
+          },
+          isEnabled: checked,
+        },
+        {
+          params: {
+            configType: 'UNRESTRICTED_RESOURCE_CONSUMPTION',
+          },
+        },
+      ],
+    } as any);
+
+    await mutateConfig();
+
+    // eslint-disable-next-line no-console
+    console.log(data);
   };
   return (
     <Flex
@@ -125,7 +184,7 @@ export default function UnrestrictedResourceConsumption({
               <Select
                 placeholder="MB"
                 value={reqSizeUnit}
-                onChange={setReqSizeUnit}
+                onChange={(value) => setReqSizeUnit(value)}
                 ml={5}
                 fw="500"
                 size="sm"
@@ -284,7 +343,7 @@ export default function UnrestrictedResourceConsumption({
 
       <Flex direction="row" ml={24} align="center" mb={24} mt={25}>
         <Group>
-          <Button fw={500} size="sm" bg="#246EFF">
+          <Button fw={500} size="sm" bg="#246EFF" loading={isButtonLoading} onClick={handleSave}>
             Save
           </Button>
           <Button variant="light" c="#444444" fw={500} size="sm">

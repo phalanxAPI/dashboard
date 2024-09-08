@@ -127,15 +127,44 @@ export default function APIDetailsPage() {
       ) : (
         <>
           <SuccessFlow configData={configData} apiId={endpointId} mutateConfig={mutate} />
-          <BrokenObjectLevelAuthorization configData={configData} />
-          <BrokenAuthentication configData={configData} />
-          <BrokenObjectPropertyLevelAuthorization configData={configData} />
-          <BrokenFunctionLevelAuthorization configData={configData} />
-          <UnrestrictedResourceConsumption configData={configData} />
-          <UnrestrictedAccessSensitiveBusinessFlows configData={configData} />
-          <ServerSideRequestForgery configData={configData} />
-          <SecurityMisconfiguration configData={configData} />
-          <UnsafeConsumptionAPIs />
+          <BrokenObjectLevelAuthorization
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <BrokenAuthentication configData={configData} apiId={endpointId} mutateConfig={mutate} />
+          <BrokenObjectPropertyLevelAuthorization
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <BrokenFunctionLevelAuthorization
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <UnrestrictedResourceConsumption
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <UnrestrictedAccessSensitiveBusinessFlows
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <ServerSideRequestForgery
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+          <SecurityMisconfiguration
+            configData={configData}
+            apiId={endpointId}
+            mutateConfig={mutate}
+          />
+
+          <UnsafeConsumptionAPIs configData={configData} apiId={endpointId} mutateConfig={mutate} />
         </>
       )}
     </DetailsPageLayout>
