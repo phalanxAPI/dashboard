@@ -1,26 +1,20 @@
-import { Text } from '@mantine/core';
-import { IconBell } from '@tabler/icons-react';
-import Image from 'next/image';
-import classes from './styles.module.css';
-import image from '../../../public/image.svg';
+import { Flex, Text, Title } from '@mantine/core';
+import Alerts from '../Alerts';
+import Avatar from '../Avatar';
 
 export function PageLayout({ children, pageTitle }: { children: any; pageTitle: string }) {
   return (
     <>
-      <div className={classes.maincont}>
-        <div className={classes.container}>
-          <div className={classes.textcont}>
-            <Text className={classes.gridtext}>{pageTitle}</Text>
-          </div>
-          <div className={classes.rightcont}>
-            <div className={classes.iconcont}>
-              <IconBell />
-            </div>
-            <div className={classes.colorTogglecont}>
-              <Image src={image} width={40} height={40} alt="Picture of the author" />
-            </div>
-          </div>
-        </div>
+      <Flex direction="column" pl="xl" pt={36} gap={10} mt={8}>
+        <Flex justify="space-between">
+          <Flex direction="column">
+            <Title fz={28}>{pageTitle}</Title>
+          </Flex>
+          <Flex direction="row" gap={16} align="center" mr="xl">
+            <Alerts />
+            <Avatar />
+          </Flex>
+        </Flex>
 
         <Text mt={10} maw={776} fw={400} style={{ color: ' #a8a8a8', fontSize: 16 }}>
           Lorem ipsum dolor sit amet consectetur. In imperdiet purus rutrum eleifend facilisi
@@ -28,8 +22,8 @@ export function PageLayout({ children, pageTitle }: { children: any; pageTitle: 
           sit odio dolor.
         </Text>
 
-        <div className={classes.childrencomp}>{children}</div>
-      </div>
+        <div>{children}</div>
+      </Flex>
     </>
   );
 }

@@ -61,6 +61,7 @@ export function NavbarNested() {
         direction="column"
         gap={10}
         mt={40}
+        pl={4}
       >
         {links}
       </Flex>
