@@ -1,12 +1,12 @@
 'use client';
 
-import { Box, Flex, Text } from '@mantine/core';
-import { useRouter } from 'next/navigation';
-import { IconBell, IconChevronLeft } from '@tabler/icons-react';
-import Image from 'next/image';
-import classes from './styles.module.css';
-import image from '../../../public/image.svg';
 import { monoFont } from '@/app/fonts';
+import { Box, Flex, Text } from '@mantine/core';
+import { IconChevronLeft } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+import Alerts from '../Alerts';
+import Avatar from '../Avatar';
+import classes from './styles.module.css';
 
 export function DetailsPageLayout({
   children,
@@ -57,12 +57,8 @@ export function DetailsPageLayout({
             )}
           </div>
           <div className={classes.rightcont}>
-            <div className={classes.iconcont}>
-              <IconBell />
-            </div>
-            <div className={classes.colorTogglecont}>
-              <Image src={image} width={40} height={40} alt="Picture of the author" />
-            </div>
+            <Alerts />
+            <Avatar />
           </div>
         </div>
 

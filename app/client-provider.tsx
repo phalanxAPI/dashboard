@@ -24,6 +24,7 @@ function ClientProvider({ children }: { children: any }) {
           overflow: 'auto',
         }}
         className={primaryFont.className}
+        p={0}
       >
         <Flex direction="column">{children}</Flex>
       </Grid.Col>

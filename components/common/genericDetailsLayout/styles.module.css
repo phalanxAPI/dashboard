@@ -4,11 +4,13 @@
   font-weight: 700;
   line-height: 35.7px;
 }
+
 .maincont {
   padding-left: 30px;
   /* padding-right: 40px; */
-  padding-top: 36px;
+  padding-top: 46px;
 }
+
 .container {
   display: flex;
   flex: 1;
@@ -16,27 +18,29 @@
   justify-content: space-between;
   align-items: center;
 }
+
 .textcont {
   height: 36px;
   display: flex;
-
   flex-direction: row;
   align-items: center;
   justify-content: center;
 }
+
 .rightcont {
   display: flex;
   align-items: center;
-
   flex-direction: row;
-
-  width: 100;
+  width: 118;
+  gap: 16;
 }
+
 .iconcont {
   height: 24px;
   width: 24px;
   color: #646464;
 }
+
 .colorTogglecont {
   width: 40px;
   height: 40px;
@@ -46,6 +50,7 @@
 .childrencomp {
   margin-top: 29px;
 }
+
 .selectcomp {
   width: 209;
   height: 42;

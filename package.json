@@ -19,6 +19,7 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.4.1",
     "@mantine/charts": "^7.12.1",
     "@mantine/code-highlight": "^7.12.1",
     "@mantine/core": "^7.12.1",
