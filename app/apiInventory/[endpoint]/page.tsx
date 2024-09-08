@@ -121,7 +121,7 @@ export default function APIDetailsPage() {
         style={{ fontSize: '14px', borderRadius: '49px' }}
       />
       {selectedValue === 'Analytics' ? (
-        <AnalyticsChart />
+        <AnalyticsChart appId={apiInfoData.appId} apiId={endpointId} />
       ) : selectedValue === 'Tickets' ? (
         <TciketsDataTable issueTicketsData={issuTicketsData} />
       ) : (
