@@ -19,7 +19,7 @@ export default function ServerStates() {
 
   useEffect(() => {
     if (servers?.data) {
-      setActiveServerId(servers.data[0]._id);
+      setActiveServerId(servers.data[0]._id as string);
     }
   }, [servers]);
 
@@ -73,7 +73,10 @@ export default function ServerStates() {
           variant="filled"
           size="xs"
           placeholder="Server"
-          data={servers?.data?.map((server) => ({ value: server._id, label: server.name }))}
+          data={servers?.data?.map((server) => ({
+            value: server._id as string,
+            label: server.name,
+          }))}
           value={activeServerId}
           onChange={(value) => setActiveServerId(value)}
           allowDeselect={false}
