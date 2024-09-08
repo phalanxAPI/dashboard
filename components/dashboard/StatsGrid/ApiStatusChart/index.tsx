@@ -79,13 +79,15 @@ export default function ApiStatusChart() {
       ...elements.reduce(
         (acc, curr) => {
           acc[getServerName(curr.serverId)] =
-            (curr.data.find((d) => d.time === item.time) as any)?.[graphDatakey[value]] || 0;
+            (curr.data.find((d) => d.time === item.time) as any)?.[
+              graphDatakey[value as keyof typeof graphDatakey]
+            ] || 0;
           return acc;
         },
         {} as Record<string, number>
       ),
     }))
-    .slice(-30, -10);
+    .slice(-30);
 
   return (
     <Box
