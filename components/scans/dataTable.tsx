@@ -30,7 +30,7 @@ export function ScansDataTable() {
       {
         params: {
           appId: activeAppId,
-          perPage: 2,
+          perPage: 10,
           page: currentPage,
         },
       },
