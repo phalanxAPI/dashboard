@@ -58,6 +58,7 @@ export default function AppDetailsPage() {
       const TestAppdata = await trigger({
         type: 'post',
         rest: [
+          {},
           {
             params: {
               appId: endpointId,
