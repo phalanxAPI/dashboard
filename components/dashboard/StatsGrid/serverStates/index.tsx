@@ -65,13 +65,14 @@ export default function ServerStates() {
         alignItems: 'center',
       }}
     >
-      <Flex align="center" gap={16} mr="auto" ml={24}>
-        <Title order={3} fz={24} fw="600" style={{ fontSize: '22px' }} c="#0D1427">
+      <Flex align="center" gap={20} mr="auto" ml={24}>
+        <Title order={3} fz={22} fw="600" style={{ fontSize: '22px' }} c="#0D1427">
           Server Stats
         </Title>
         <Select
+          w={150}
           variant="filled"
-          size="xs"
+          size="sm"
           placeholder="Server"
           data={servers?.data?.map((server) => ({
             value: server._id as string,
@@ -89,7 +90,7 @@ export default function ServerStates() {
               thickness={8}
               sections={[{ value: sysData?.cpuLoad || 0, color: '#0066FF' }]}
               label={
-                <Text fw="bold" c="#151522" ta="center" size="xl">
+                <Text fw="bold" c="#151522" ta="center" size="md">
                   {sysData?.cpuLoad.toFixed(2)}%
                 </Text>
               }
@@ -108,7 +109,7 @@ export default function ServerStates() {
               thickness={8}
               sections={[{ value: sysData?.memUsage.usagePercent, color: '#0066FF' }]}
               label={
-                <Text fw="bold" c="#151522" ta="center" size="xl">
+                <Text fw="bold" c="#151522" ta="center" size="md">
                   {sysData?.memUsage.usagePercent}%
                 </Text>
               }
@@ -136,7 +137,7 @@ export default function ServerStates() {
                 },
               ]}
               label={
-                <Text fw="bold" c="#151522" ta="center" size="lg">
+                <Text fw="bold" c="#151522" ta="center" size="md">
                   {((sysData?.networkStats[0]?.rxSec || 0) / 1000 / 1000).toFixed(2)}MB/s
                 </Text>
               }
@@ -156,7 +157,7 @@ export default function ServerStates() {
               thickness={8}
               sections={[{ value: sysData?.battery.percent, color: '#0066FF' }]}
               label={
-                <Text fw="bold" c="#151522" ta="center" size="xl">
+                <Text fw="bold" c="#151522" ta="center" size="md">
                   {sysData?.battery.percent}%
                 </Text>
               }
