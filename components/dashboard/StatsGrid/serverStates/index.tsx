@@ -1,38 +1,57 @@
-import useSWR from 'swr';
+import { Box, Flex, Grid, RingProgress, Select, Skeleton, Text, Title } from '@mantine/core';
 import { AxiosResponse } from 'axios';
-import { Box, Flex, Grid, RingProgress, Skeleton, Text } from '@mantine/core';
-
-import { BASE_URL } from '@/utils/constants';
-import { genericAPIFetcher } from '@/utils/swr.helper';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { ServerDoc } from '@/arsenal/models/server';
 import { SystemInfo } from '@/arsenal/types/system-info';
 import { useActiveApp } from '@/store/activeApp.store';
+import { BASE_URL } from '@/utils/constants';
+import { genericAPIFetcher } from '@/utils/swr.helper';
 
 export default function ServerStates() {
   const { activeAppId } = useActiveApp();
 
-  const { data, error, isLoading } = useSWR<AxiosResponse<SystemInfo>>(
+  const { data: servers } = useSWR<AxiosResponse<ServerDoc[]>>(
+    () => [`${BASE_URL}/applications/${activeAppId}/servers`, 'get'],
+    genericAPIFetcher
+  );
+
+  const [activeServerId, setActiveServerId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (servers?.data) {
+      setActiveServerId(servers.data[0]._id);
+    }
+  }, [servers]);
+
+  const {
+    data: systemInfo,
+    error: errorLoadingSystemInfo,
+    isLoading: loadingSystemInfo,
+  } = useSWR<AxiosResponse<SystemInfo>>(
     () => [
-      `${BASE_URL}/system-info`,
+      activeServerId ? `${BASE_URL}/system-info` : null,
       'get',
       {
         params: {
           appId: activeAppId,
-          serverId: '60d5ec49f8d2b341d8f8e8b8',
+          serverId: activeServerId,
         },
       },
     ],
     genericAPIFetcher
   );
 
-  if (isLoading) {
+  if (loadingSystemInfo) {
     return <Skeleton height={350} mt={6} radius="xl" />;
   }
 
-  if (error) {
+  if (errorLoadingSystemInfo) {
     return <Text>Error loading data</Text>;
   }
 
-  const elements = data?.data;
+  const sysData = systemInfo?.data;
+  console.log('servers', sysData?.networkStats[0]?.rxSec);
   return (
     <Box
       pt="xl"
@@ -49,18 +68,27 @@ export default function ServerStates() {
         alignItems: 'center',
       }}
     >
-      <Text fw="600" style={{ fontSize: '22px' }} c="#0D1427">
-        Server Stats
-      </Text>
+      <Flex align="center" gap={16} mr="auto" ml={24}>
+        <Title order={3} fz={24} fw="600" style={{ fontSize: '22px' }} c="#0D1427">
+          Server Stats
+        </Title>
+        <Select
+          placeholder="Server"
+          data={servers?.data?.map((server) => ({ value: server._id, label: server.name }))}
+          value={activeServerId}
+          onChange={(value) => setActiveServerId(value)}
+          allowDeselect={false}
+        />
+      </Flex>
       <Grid mt="xl" gutter={{ base: 'lg', md: 'xl', lg: 50 }}>
         <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: elements?.cpuLoad, color: '#0066FF' }]}
+              sections={[{ value: sysData?.cpuLoad || 0, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  {elements?.cpuLoad}%
+                  {sysData?.cpuLoad.toFixed(2)}%
                 </Text>
               }
             />
@@ -76,10 +104,10 @@ export default function ServerStates() {
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: elements?.memUsage.usagePercent, color: '#0066FF' }]}
+              sections={[{ value: sysData?.memUsage.usagePercent, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  {elements?.memUsage.usagePercent}%
+                  {sysData?.memUsage.usagePercent}%
                 </Text>
               }
             />
@@ -95,10 +123,19 @@ export default function ServerStates() {
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: 60, color: '#0066FF' }]}
+              sections={[
+                {
+                  value:
+                    ((sysData?.networkStats[0]?.rxSec || 0) /
+                      ((sysData?.networkStats[0]?.rxSec || 1) +
+                        (sysData?.networkStats[0]?.txSec || 0))) *
+                    100,
+                  color: '#0066FF',
+                },
+              ]}
               label={
-                <Text fw="bold" c="#151522" ta="center" size="xl">
-                  {(elements?.networkStats?.[0]?.rx_sec || 0) / 1000} KB/s
+                <Text fw="bold" c="#151522" ta="center" size="lg">
+                  {((sysData?.networkStats[0]?.rxSec || 0) / 1000 / 1000).toFixed(2)}MB/s
                 </Text>
               }
             />
@@ -115,10 +152,10 @@ export default function ServerStates() {
           <Flex display="flex" direction="column" style={{ textAlign: 'center' }}>
             <RingProgress
               thickness={8}
-              sections={[{ value: elements?.battery.percent, color: '#0066FF' }]}
+              sections={[{ value: sysData?.battery.percent, color: '#0066FF' }]}
               label={
                 <Text fw="bold" c="#151522" ta="center" size="xl">
-                  {elements?.battery.percent}%
+                  {sysData?.battery.percent}%
                 </Text>
               }
             />
