@@ -1,24 +1,98 @@
-import { Box } from '@mantine/core';
 import { AreaChart } from '@mantine/charts';
-import { APIStatusSelector } from '@/components/dashboard/StatsGrid/apiStatusSelector';
+import { Box, Flex, Select, Skeleton, Text, Title, useMantineTheme } from '@mantine/core';
+import { AxiosResponse } from 'axios';
+import { useState } from 'react';
+import useSWR from 'swr';
+import { genericAPIFetcher } from '@/utils/swr.helper';
+import { BASE_URL } from '@/utils/constants';
+import { toTitleCase } from '@/utils';
 
-export default function AnalyticsChart() {
-  const biaxialData = [
-    { name: 'api1', server1: 4000, server2: 2400, server3: (4000 + 2400) / 2 },
-    { name: 'api2', server1: 3000, server2: 1398, server3: (3000 + 1398) / 2 },
-    { name: 'api3', server1: 2000, server2: 9800, server3: (2000 + 9800) / 2 },
-    { name: 'api4', server1: 2780, server2: 3908, server3: (2780 + 3908) / 2 },
-    { name: 'api5', server1: 1890, server2: 4800, server3: (1890 + 4800) / 2 },
-    { name: 'api6', server1: 2390, server2: 3800, server3: (2390 + 3800) / 2 },
-    { name: 'api7', server1: 3490, server2: 4300, server3: (3490 + 4300) / 2 },
+const getServerName = (serverId: string) => toTitleCase(serverId?.split('-').join(' '));
+
+export default function ApiStatusChart({ appId }: { appId: string }) {
+  const theme = useMantineTheme();
+  const { colors } = theme;
+  const colorsList = Object.entries(colors);
+  const totalColors = colorsList.length;
+
+  const [value, setValue] = useState('api-info-graph?requestType=INCOMING');
+
+  const options = [
+    { value: 'api-info-graph?requestType=INCOMING', label: 'Incoming Requests' },
+    { value: 'api-info-graph?requestType=OUTGOING', label: 'Outgoing Requests' },
+    { value: 'system-info/cpu-usage', label: 'Cpu Usage' },
+    { value: 'system-info/memory-usage', label: 'Memory Usage' },
+    { value: 'system-info/disk-io?READ', label: 'Disk IO - Read' },
+    { value: 'system-info/disk-io?WRITE', label: 'Disk IO - Write' },
+    { value: 'system-info/network-stats', label: 'Network Stats' },
   ];
+
+  const graphDatakey = {
+    'system-info/cpu-usage': 'avgCpuLoad',
+    'system-info/memory-usage': 'avgMemUsagePercent',
+    'system-info/disk-io?READ': 'avgDiskRead',
+    'system-info/disk-io?WRITE': 'avgDiskWrite',
+    'system-info/network-stats': 'avgRxSec',
+    'api-info-graph?requestType=INCOMING': 'count',
+    'api-info-graph?requestType=OUTGOING': 'count',
+  };
+
+  const { data, error, isLoading } = useSWR<
+    AxiosResponse<
+      {
+        serverId: string;
+        data: {
+          time: Date;
+        } & Record<string, number>[];
+      }[]
+    >
+  >(
+    () => [
+      `${BASE_URL}/${value}`,
+      'get',
+      {
+        params: {
+          appId,
+        },
+      },
+    ],
+    genericAPIFetcher
+  );
+
+  if (isLoading) {
+    return <Skeleton mt={27} height={350} w={730} radius="xl" />;
+  }
+
+  if (error) {
+    return <Text>Error loading data</Text>;
+  }
+
+  const elements = data?.data || [];
+
+  // use 20 data points from the and  the graph skipping 10 data points
+  const graphData = elements[0]?.data
+    .map((item) => ({
+      name: item.time,
+      time: new Date(item.time).toLocaleString(),
+      ...elements.reduce(
+        (acc, curr) => {
+          acc[getServerName(curr.serverId)] =
+            (curr.data.find((d) => d.time === item.time) as any)?.[
+              graphDatakey[value as keyof typeof graphDatakey]
+            ] || 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
+    }))
+    .slice(-30);
 
   return (
     <Box
       mt={27}
       maw={730}
       style={{
-        height: '350px',
+        height: 350,
         backgroundColor: 'white',
         borderRadius: '40px',
         display: 'flex',
@@ -31,28 +105,71 @@ export default function AnalyticsChart() {
       <Box
         style={{
           position: 'absolute',
-          top: '23px',
-          left: '25px',
+          top: 23,
+          left: 25,
         }}
       >
-        <APIStatusSelector />
+        <Select
+          placeholder="API Requests"
+          value={value}
+          onChange={(val) => val && setValue(val)}
+          defaultValue="API Requests"
+          data={options}
+          maw={180}
+          mah={32}
+          variant="filled"
+        />
       </Box>
+
+      <Flex
+        style={{
+          position: 'absolute',
+          top: 23,
+          right: 25,
+        }}
+        direction="column"
+        gap={8}
+      >
+        <Title order={3} size="sm">
+          Servers:
+        </Title>
+        <Flex direction="column" align="flex-start" gap={6} miw={120}>
+          {elements?.map((item, index) => (
+            <Flex key={index} ml={1} align="center" gap={8}>
+              <Box
+                style={{
+                  width: 10,
+                  height: 10,
+                  backgroundColor: colorsList[(index * 2 + 3) % totalColors][1][5] || '#000',
+                  borderRadius: '50%',
+                }}
+              />
+              <Text size="xs" c="dimmed">
+                {getServerName(item.serverId)}
+              </Text>
+            </Flex>
+          ))}
+        </Flex>
+      </Flex>
       <AreaChart
-        data={biaxialData}
+        data={graphData}
         h={270}
-        dataKey="name"
+        dataKey="time"
         withXAxis={false}
         withYAxis={false}
-        withLegend
+        // withLegend
         legendProps={{
           verticalAlign: 'top',
         }}
-        series={[
-          { name: 'server1', color: '#F03E3E' },
-          { name: 'server2', color: '#4263EB', yAxisId: 'right' },
-          { name: 'server3', color: '#4DE589', yAxisId: 'right' },
-        ]}
+        series={elements?.map((item, index) => ({
+          name: getServerName(item.serverId),
+          color: colorsList[(index * 2 + 3) % totalColors][1][5] || '#000',
+        }))}
         gridColor="transparent"
+        curveType="bump"
+        withDots={false}
+        tooltipAnimationDuration={200}
+        tooltipProps={{}}
       />
     </Box>
   );

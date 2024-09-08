@@ -1,35 +1,34 @@
 'use client';
 
-import useSWR from 'swr';
-import { AxiosResponse } from 'axios';
-import useSWRMutation from 'swr/mutation';
-
-import { useState } from 'react';
 import { Button, Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
+import { AxiosResponse } from 'axios';
 import { useParams } from 'next/navigation';
-import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
-import AppInfo from '@/components/apps/appDetails/appInfo';
+import { useState } from 'react';
+import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
+import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 import AnalyticsChart from '@/components/apps/appDetails/analyticsChart';
-import BaseURL from '@/components/apps/appDetails/rulesConfigs/baseURL';
+import AppInfo from '@/components/apps/appDetails/appInfo';
 import AuthTokens from '@/components/apps/appDetails/rulesConfigs/authToken';
+import BaseURL from '@/components/apps/appDetails/rulesConfigs/baseURL';
 import UserData from '@/components/apps/appDetails/rulesConfigs/userData';
+import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher, genericMutationFetcher } from '@/utils/swr.helper';
-import { SecurityConfiguration } from '@/arsenal/types/security-conf';
 
 export default function AppDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
   const params = useParams();
-  const endpointId = params.endpoint as string;
+  const appId = params.endpoint as string;
 
   // const [isButtonLoading, setIsButtonLoading] = useState(false);
   const { data, error, isLoading, mutate } = useSWR<AxiosResponse<Record<string, any>>>(
-    () => [`${BASE_URL}/applications/${endpointId}`, 'get'],
+    () => [`${BASE_URL}/applications/${appId}`, 'get'],
     genericAPIFetcher
   );
 
   const { data: data2, mutate: mutateConfig } = useSWR<AxiosResponse<SecurityConfiguration[]>>(
-    () => [`${BASE_URL}/config/app/${endpointId}`, 'get'],
+    () => [`${BASE_URL}/config/app/${appId}`, 'get'],
     genericAPIFetcher
   );
 
@@ -61,7 +60,7 @@ export default function AppDetailsPage() {
           {},
           {
             params: {
-              appId: endpointId,
+              appId,
             },
           },
         ],
@@ -99,12 +98,12 @@ export default function AppDetailsPage() {
         </Button>
       </Flex>
       {selectedValue === 'Analytics' ? (
-        <AnalyticsChart />
+        <AnalyticsChart appId={appId} />
       ) : (
         <>
-          <BaseURL baseUrl={appInfoData.baseUrl} appId={endpointId} mutateConfig={mutate} />
-          <AuthTokens configData={configData} appId={endpointId} mutateConfig={mutateConfig} />
-          <UserData configData={configData} appId={endpointId} mutateConfig={mutateConfig} />
+          <BaseURL baseUrl={appInfoData.baseUrl} appId={appId} mutateConfig={mutate} />
+          <AuthTokens configData={configData} appId={appId} mutateConfig={mutateConfig} />
+          <UserData configData={configData} appId={appId} mutateConfig={mutateConfig} />
         </>
       )}
     </DetailsPageLayout>

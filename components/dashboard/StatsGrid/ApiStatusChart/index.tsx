@@ -24,8 +24,8 @@ export default function ApiStatusChart() {
     { value: 'api-info-graph?requestType=OUTGOING', label: 'Outgoing Requests' },
     { value: 'system-info/cpu-usage', label: 'Cpu Usage' },
     { value: 'system-info/memory-usage', label: 'Memory Usage' },
-    { value: 'system-info/disk-io?READ', label: 'Disk IO' },
-    { value: 'system-info/disk-io?WRITE', label: 'Disk IO' },
+    { value: 'system-info/disk-io?READ', label: 'Disk IO - Read' },
+    { value: 'system-info/disk-io?WRITE', label: 'Disk IO - Write' },
     { value: 'system-info/network-stats', label: 'Network Stats' },
   ];
 
