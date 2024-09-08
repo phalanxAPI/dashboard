@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { ServerDoc } from '@/arsenal/models/server';
-import { SystemInfo } from '@/arsenal/types/system-info';
 import { useActiveApp } from '@/store/activeApp.store';
 import { BASE_URL } from '@/utils/constants';
 import { genericAPIFetcher } from '@/utils/swr.helper';
@@ -24,23 +23,21 @@ export default function ServerStates() {
     }
   }, [servers]);
 
-  const {
-    data: systemInfo,
-    error: errorLoadingSystemInfo,
-    isLoading: loadingSystemInfo,
-  } = useSWR<AxiosResponse<SystemInfo>>(
-    () => [
-      activeServerId ? `${BASE_URL}/system-info` : null,
-      'get',
-      {
-        params: {
-          appId: activeAppId,
-          serverId: activeServerId,
+  const { data: systemInfo, error: errorLoadingSystemInfo, isLoading: loadingSystemInfo } =
+    // SystemInfo
+    useSWR<AxiosResponse<any>>(
+      () => [
+        activeServerId ? `${BASE_URL}/system-info` : null,
+        'get',
+        {
+          params: {
+            appId: activeAppId,
+            serverId: activeServerId,
+          },
         },
-      },
-    ],
-    genericAPIFetcher
-  );
+      ],
+      genericAPIFetcher
+    );
 
   if (loadingSystemInfo) {
     return <Skeleton height={350} mt={6} radius="xl" />;
@@ -73,6 +70,8 @@ export default function ServerStates() {
           Server Stats
         </Title>
         <Select
+          variant="filled"
+          size="xs"
           placeholder="Server"
           data={servers?.data?.map((server) => ({ value: server._id, label: server.name }))}
           value={activeServerId}
