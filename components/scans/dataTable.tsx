@@ -95,7 +95,7 @@ export function ScansDataTable() {
             <Table.Th>Status</Table.Th>
             <Table.Th>Scan Date</Table.Th>
             <Table.Th>Time</Table.Th>
-            <Table.Th>Endpoint</Table.Th>
+            <Table.Th>Details</Table.Th>
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
