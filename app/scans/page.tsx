@@ -9,7 +9,10 @@ export default function Page() {
   const { activeAppId } = useActiveApp();
 
   return (
-    <PageLayout pageTitle="Scans">
+    <PageLayout
+      pageTitle="Scans"
+      pageDescription="Perform comprehensive security and performance scans across APIs and services, identifying vulnerabilities and ensuring compliance with standards."
+    >
       <GenericSelector />
       {activeAppId && <ScansDataTable />}
     </PageLayout>

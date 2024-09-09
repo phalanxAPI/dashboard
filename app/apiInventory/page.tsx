@@ -9,7 +9,10 @@ export default function Page() {
   const { activeAppId } = useActiveApp();
 
   return (
-    <PageLayout pageTitle="API Inventory">
+    <PageLayout
+      pageTitle="API Inventory"
+      pageDescription="View and manage the complete inventory of APIs, including details about hits, verification status, and whether the endpoints are deprecated."
+    >
       <GenericSelector />
       {activeAppId && <APIInventoryDataTable />}
     </PageLayout>

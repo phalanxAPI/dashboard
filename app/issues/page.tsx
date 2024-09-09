@@ -9,7 +9,10 @@ export default function Page() {
   const { activeAppId } = useActiveApp();
 
   return (
-    <PageLayout pageTitle="Issue Tickets">
+    <PageLayout
+      pageTitle="Issue Tickets"
+      pageDescription="Track and resolve API-related issues by reviewing severity, status, assignee, and raised time across backend services."
+    >
       <GenericSelector />
       {activeAppId && <IssuesDataTable />}
     </PageLayout>
