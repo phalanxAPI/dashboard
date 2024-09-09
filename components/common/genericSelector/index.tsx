@@ -35,7 +35,7 @@ export function GenericSelector() {
         value: app._id,
         label: toTitleCase(app.name.split('-').join(' ')),
       }))}
-      mt={29}
+      mt={24}
       maw={210}
       styles={() => ({
         input: {

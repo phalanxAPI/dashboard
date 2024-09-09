@@ -77,6 +77,7 @@ export function AppsDataTable() {
 
   return (
     <Flex
+      mt={20}
       style={{
         maxWidth: '1024px',
         marginBottom: '60px',
