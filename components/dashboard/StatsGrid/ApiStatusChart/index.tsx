@@ -170,6 +170,7 @@ export default function ApiStatusChart() {
         withDots={false}
         tooltipAnimationDuration={200}
         tooltipProps={{}}
+        mb={-1}
       />
     </Box>
   );
