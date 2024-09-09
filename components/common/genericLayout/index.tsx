@@ -1,4 +1,5 @@
 import { Flex, Text, Title } from '@mantine/core';
+import { motion } from 'framer-motion';
 import Alerts from '../Alerts';
 import Avatar from '../Avatar';
 
@@ -16,9 +17,15 @@ export function PageLayout({
       <Flex direction="column" pl="xl" pt={36} gap={10} mt={8}>
         <Flex justify="space-between">
           <Flex direction="column">
-            <Title c="#3c3c3c" fz={28}>
-              {pageTitle}
-            </Title>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Title c="#3c3c3c" fz={28}>
+                {pageTitle}
+              </Title>
+            </motion.div>
           </Flex>
           <Flex direction="row" gap={16} align="center" mr="xl">
             <Alerts />
@@ -26,11 +33,23 @@ export function PageLayout({
           </Flex>
         </Flex>
 
-        <Text mt={10} maw={776} fw={400} style={{ color: ' #a8a8a8', fontSize: 16 }}>
-          {pageDescription}
-        </Text>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Text mt={10} maw={776} fw={400} style={{ color: ' #a8a8a8', fontSize: 16 }}>
+            {pageDescription}
+          </Text>
+        </motion.div>
 
-        <div>{children}</div>
+        <motion.div
+          initial={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {children}
+        </motion.div>
       </Flex>
     </>
   );
