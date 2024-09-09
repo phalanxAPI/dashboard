@@ -1,31 +1,31 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
-import useSWR from 'swr';
+import { Button, Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
+import { IconCheck } from '@tabler/icons-react';
 import { AxiosResponse } from 'axios';
-import { Flex, SegmentedControl, Skeleton, Text } from '@mantine/core';
-
-import APIInfo from '@/components/apiInventory/apiDetsils/apiInfo';
-import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
-import AnalyticsChart from '@/components/apiInventory/apiDetsils/analyticsChart';
-import { TciketsDataTable } from '@/components/apiInventory/apiDetsils/ticketsDatatable';
-import SuccessFlow from '@/components/apiInventory/apiDetsils/rulesConfigs/successFlow';
-
-import BrokenObjectLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectLevelAuthorization';
-import BrokenAuthentication from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenAuthentication';
-import BrokenObjectPropertyLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectPropertyLevelAuthorization';
-import BrokenFunctionLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenFunctionLevelAuthorization';
-import ServerSideRequestForgery from '@/components/apiInventory/apiDetsils/rulesConfigs/ServerSideRequestForgery';
-import SecurityMisconfiguration from '@/components/apiInventory/apiDetsils/rulesConfigs/SecurityMisconfiguration';
-import UnsafeConsumptionAPIs from '@/components/apiInventory/apiDetsils/rulesConfigs/UnsafeConsumptionAPIs';
-import UnrestrictedResourceConsumption from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedResourceConsumption';
-import UnrestrictedAccessSensitiveBusinessFlows from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedAccessSensitiveBusinessFlows';
-
-import { BASE_URL } from '@/utils/constants';
-import { genericAPIFetcher } from '@/utils/swr.helper';
-import { SecurityConfiguration } from '@/arsenal/types/security-conf';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
+import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
 import { Issue } from '@/arsenal/types/issue';
+import { SecurityConfiguration } from '@/arsenal/types/security-conf';
+import AnalyticsChart from '@/components/apiInventory/apiDetsils/analyticsChart';
+import APIInfo from '@/components/apiInventory/apiDetsils/apiInfo';
+import SuccessFlow from '@/components/apiInventory/apiDetsils/rulesConfigs/successFlow';
+import { TciketsDataTable } from '@/components/apiInventory/apiDetsils/ticketsDatatable';
+import { DetailsPageLayout } from '@/components/common/genericDetailsLayout';
+import { BASE_URL } from '@/utils/constants';
+import { genericAPIFetcher, genericMutationFetcher } from '@/utils/swr.helper';
+
+import BrokenAuthentication from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenAuthentication';
+import BrokenFunctionLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenFunctionLevelAuthorization';
+import BrokenObjectLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectLevelAuthorization';
+import BrokenObjectPropertyLevelAuthorization from '@/components/apiInventory/apiDetsils/rulesConfigs/BrokenObjectPropertyLevelAuthorization';
+import SecurityMisconfiguration from '@/components/apiInventory/apiDetsils/rulesConfigs/SecurityMisconfiguration';
+import ServerSideRequestForgery from '@/components/apiInventory/apiDetsils/rulesConfigs/ServerSideRequestForgery';
+import UnrestrictedAccessSensitiveBusinessFlows from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedAccessSensitiveBusinessFlows';
+import UnrestrictedResourceConsumption from '@/components/apiInventory/apiDetsils/rulesConfigs/UnrestrictedResourceConsumption';
+import UnsafeConsumptionAPIs from '@/components/apiInventory/apiDetsils/rulesConfigs/UnsafeConsumptionAPIs';
 
 export default function APIDetailsPage() {
   const [selectedValue, setSelectedValue] = useState('Rules Config');
@@ -33,7 +33,12 @@ export default function APIDetailsPage() {
   const params = useParams();
   const endpointId = params.endpoint as string;
 
-  const { data, error, isLoading } = useSWR<AxiosResponse<Record<string, any>>>(
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: mutateAPIInfo,
+  } = useSWR<AxiosResponse<Record<string, any>>>(
     () => [`${BASE_URL}/api-info/${endpointId}`, 'get'],
     genericAPIFetcher
   );
@@ -48,6 +53,14 @@ export default function APIDetailsPage() {
     genericAPIFetcher
   );
 
+  const { trigger: verifyAPI, isMutating: isVerifying } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/api-info/${endpointId}/verify`,
+    genericMutationFetcher
+  );
+  const { trigger: deprecateAPI, isMutating: isDeprecating } = useSWRMutation<AxiosResponse<any>>(
+    `${BASE_URL}/api-info/${endpointId}/deprecate`,
+    genericMutationFetcher
+  );
   // tickets data
 
   const {
@@ -110,16 +123,58 @@ export default function APIDetailsPage() {
   return (
     <DetailsPageLayout pageTitle="API Details" endpointLabel endpoint={apiEndpoint}>
       <APIInfo data={apiInfoData} />
-      <SegmentedControl
-        value={selectedValue}
-        onChange={setSelectedValue}
-        data={['Rules Config', 'Analytics', 'Tickets']}
-        color="#1E1E1E"
-        bg="white"
-        fw={400}
-        mt={5}
-        style={{ fontSize: '14px', borderRadius: '49px' }}
-      />
+      <Flex justify="space-between" align="center" maw={1000}>
+        <SegmentedControl
+          value={selectedValue}
+          onChange={setSelectedValue}
+          data={['Rules Config', 'Analytics', 'Tickets']}
+          color="#1E1E1E"
+          bg="white"
+          fw={400}
+          mt={5}
+          style={{ fontSize: '14px', borderRadius: '49px' }}
+        />
+        <Flex align="center" gap={16}>
+          {!apiInfoData.isVerified && (
+            <Button
+              color="teal"
+              variant="outline"
+              leftSection={<IconCheck size={18} />}
+              size="compact-sm"
+              onClick={async () => {
+                await verifyAPI({
+                  type: 'put',
+                  rest: [],
+                } as any);
+
+                mutateAPIInfo();
+              }}
+              loading={isVerifying}
+            >
+              Verify
+            </Button>
+          )}
+          {apiInfoData.isVerified && !apiInfoData.isDeprecated && (
+            <Button
+              color="orange"
+              variant="outline"
+              leftSection={<IconCheck size={18} />}
+              size="compact-sm"
+              onClick={async () => {
+                await deprecateAPI({
+                  type: 'put',
+                  rest: [],
+                } as any);
+
+                mutateAPIInfo();
+              }}
+              loading={isDeprecating}
+            >
+              Mark As Deprecated
+            </Button>
+          )}
+        </Flex>
+      </Flex>
       {selectedValue === 'Analytics' ? (
         <AnalyticsChart appId={apiInfoData.appId} apiId={endpointId} />
       ) : selectedValue === 'Tickets' ? (
