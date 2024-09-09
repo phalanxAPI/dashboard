@@ -132,7 +132,7 @@ export function APIInventoryDataTable() {
       <Table
         mah={636}
         horizontalSpacing="xl"
-        verticalSpacing="sm"
+        verticalSpacing="md"
         bgcolor="#ffffff"
         mb={26}
         mt={27}
