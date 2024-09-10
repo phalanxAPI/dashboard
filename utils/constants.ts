@@ -3,4 +3,4 @@ export const API_CONSTANTS = {
   API_NINJA_LOGO: 'https://api.api-ninjas.com/v1/logo',
 };
 
-export const BASE_URL = 'http://localhost:8000/api/v1';
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
